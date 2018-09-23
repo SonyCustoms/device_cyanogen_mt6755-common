@@ -752,13 +752,13 @@ service wifi2agps /system/bin/wifi2agps
     user wifi
     group gps inet
 
-service mnld /system/xbin/mnld
+service mnld /system/bin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
     socket mnld stream 660 gps system
 
-service MPED /system/xbin/MPED
+service MPED /system/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
@@ -880,11 +880,6 @@ service wmtLoader /system/bin/wmt_loader
     class core
     oneshot
 
-service conn_launcher /system/bin/6620_launcher -p /system/etc/firmware/
-    user system
-    group system
-    class core
-
 # Graphics
 # start ged_srv
 on property:sys.boot_completed=1
@@ -926,20 +921,6 @@ service etsd /system/bin/etsd
     class late_start
     user system
     group system
-
-service fingerprintd /system/bin/fingerprintd
-    class late_start
-    user system
-    group system
-
-service gx_fpd /system/bin/gx_fpd
-    class late_start
-    user root
-    group root system
-
-service fp /system/bin/fpserver
-    class main
-    user root
 
 on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
