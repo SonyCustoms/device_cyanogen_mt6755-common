@@ -22,6 +22,26 @@ for dir in $dirs ; do
 	echo " "
 done
 
+dirs="frameworks/native"
+
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
+	echo " "
+done
+
+dirs="frameworks/base"
+
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
+	echo " "
+done
+
 dirs="system/core"
 
 for dir in $dirs ; do
@@ -31,6 +51,38 @@ for dir in $dirs ; do
 	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
 	echo " "
 done
+
+dirs="system/netd"
+
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
+	echo " "
+done
+
+dirs="packages/apps/FMRadio/jni/fmr"
+
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
+	echo " "
+done
+
+
+dirs="packages/apps/Settings"
+
+for dir in $dirs ; do
+	cd $rootdirectory
+	cd $dir
+	echo "Applying $dir patches..."
+	git am $rootdirectory/device/cyanogen/mt6755-common/patches/$dir/*.patch
+	echo " "
+done
+
 
 dirs="system/sepolicy"
 
