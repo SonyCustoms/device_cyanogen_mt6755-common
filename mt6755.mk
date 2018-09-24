@@ -23,9 +23,7 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
-    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-    frameworks/native/data/etc/android.hardware.wifi.direct.xml:system/etc/permissions/android.hardware.wifi.direct.xml \
-    frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml
 
 # Root
 PRODUCT_PACKAGES += \
@@ -57,13 +55,15 @@ PRODUCT_PACKAGES += \
     audio.usb.default \
     audio.r_submix.default \
     libaudiopolicymanagerdefault \
+    libaudio-resampler \
+    libaudiosetting \
+    libaudiopolicymanager \
+    audio_policy.stub \
     libtinyalsa \
     libtinycompress \
     libtinymix \
     libtinyxml \
     libfs_mgr
-
-PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/a2dp_audio_policy_configuration.xml:system/etc/a2dp_audio_policy_configuration.xml \
@@ -116,29 +116,27 @@ PRODUCT_PACKAGES += \
     muxreport \
     terservice
 
+# RIL
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.kernel.android.checkjni=0 \
+    ro.telephony.ril_class=MT6750 \
+    ro.telephony.ril.config=fakeiccid \
+    ro.com.android.mobiledata=false
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml \
-    $(LOCAL_PATH)/prebuilts/proprietary/bin/mtkrild:system/bin/mtkrild \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmal.so:system/lib/libmal.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmal.so:system/lib64/libmal.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmdfx.so:system/lib/libmdfx.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmdfx.so:system/lib64/libmdfx.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib/librilmtk.so:system/lib/librilmtk.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib64/librilmtk.so:system/lib64/librilmtk.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib/mtk-ril.so:system/lib/mtk-ril.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib64/mtk-ril.so:system/lib64/mtk-ril.so
+#    $(LOCAL_PATH)/prebuilts/proprietary/bin/mtkrild:system/bin/mtkrild \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmal.so:system/lib/libmal.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmal.so:system/lib64/libmal.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmdfx.so:system/lib/libmdfx.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmdfx.so:system/lib64/libmdfx.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib/librilmtk.so:system/lib/librilmtk.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/librilmtk.so:system/lib64/librilmtk.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib/mtk-ril.so:system/lib/mtk-ril.so \
+#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/mtk-ril.so:system/lib64/mtk-ril.so
 
-# Wifi
-PRODUCT_PACKAGES += \
-    libwpa_client \
-    hostapd \
-    dhcpcd.conf \
-    wpa_supplicant \
-    wpa_supplicant.conf
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/hostapd/hostapd_default.conf:system/etc/hostapd/hostapd_default.conf \
-    $(LOCAL_PATH)/configs/hostapd/hostapd.accept:system/etc/hostapd/hostapd.accept \
-    $(LOCAL_PATH)/configs/hostapd/hostapd.deny:system/etc/hostapd/hostapd.deny
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.com.android.mobiledata=false
 
 # Charger Mode
 PRODUCT_PACKAGES += \
@@ -155,6 +153,10 @@ PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
+    frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:/system/etc/audio_policy_volumes.xml \
+    frameworks/av/services/audiopolicy/config/default_volume_tables.xml:/system/etc/default_volume_tables.xml \
+    frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:/system/etc/r_submix_audio_policy_configuration.xml \
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:/system/etc/usb_audio_policy_configuration.xml \
     $(LOCAL_PATH)/configs/media_codecs_performance.xml:system/etc/media_codecs_performance.xml \
     $(LOCAL_PATH)/configs/media_profiles.xml:system/etc/media_profiles.xml \
     $(LOCAL_PATH)/configs/media_codecs.xml:system/etc/media_codecs.xml \
