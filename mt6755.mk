@@ -29,18 +29,9 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     fstab.mt6755 \
     init.mt6755.rc \
-    init.rc \
     init.mt6755.modem.rc \
     init.mt6755.usb.rc \
     ueventd.mt6755.rc
-
-# Ramdisk files
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/fstab.mt6755:root/fstab.mt6755 \
-    $(LOCAL_PATH)/rootdir/init.mt6755.rc:root/init.mt6755.rc \
-    $(LOCAL_PATH)/rootdir/init.mt6755.usb.rc:root/init.mt6755.usb.rc \
-    $(LOCAL_PATH)/rootdir/init.rc:root/init.rc \
-    $(LOCAL_PATH)/rootdir/ueventd.mt6755.rc:root/ueventd.mt6755.rc
 
 # Recovery Ramdisk
 PRODUCT_PACKAGES += \
