@@ -16,7 +16,7 @@ on init
     mkdir /persist   0771 system system
     mkdir /nvdata    0771 system system
     mkdir /custom    0771 system system
-    mkdir /nvcfg 0771 system system
+
 # change lk_env permission
     chown root system /proc/lk_env
     chmod 0660 /proc/lk_env
@@ -37,18 +37,6 @@ on post-fs
     #change permissions for mediaserver
     chown root media /proc/clkmgr/mipi_test
 
-    #change permission for engineer mode
-    chown radio system /proc/clkmgr/pll_test
-    chown radio system /proc/clkmgr/pll_fsel
-    chmod 0664 /proc/clkmgr/pll_test
-    chmod 0664 /proc/clkmgr/pll_fsel
-    #change permission for engineer mode
-    chown radio system /proc/freqhopping/dramc
-    chown radio system /proc/freqhopping/dumpregs
-    chown radio system /proc/freqhopping/freqhopping_debug
-    chown radio system /proc/freqhopping/status
-    chown radio system /proc/freqhopping/userdef
-
 # change owner
     chown system system /proc/bootprof
     chown root system /proc/mtprof/cputime
@@ -67,9 +55,6 @@ on post-fs
     mkdir /nvdata/md_cmn 0771 system radio
     mkdir /nvdata/media  0771 media audio
     restorecon_recursive /nvdata/
-    chown system system /nvcfg
-    chmod 0771 /nvcfg
-    restorecon_recursive /nvcfg
 
 on post-fs-data
     # Should create dependent /data folders here
@@ -83,7 +68,7 @@ on post-fs-data
 
     # rfkill
     chmod 0660 /dev/rfkill
-    chmod 0660 /data/misc/wifi/p2p_supplicant.conf
+
     # Radio
     mkdir /dev/radio 0770 radio radio
     mkdir /data/drm/wv 0770 drm system
@@ -100,14 +85,6 @@ on post-fs-data
 
     # NFC
     mkdir /data/nfc_socket 0771 nfc radio
-
-    # dhcp server
-    mkdir /data/misc/dhcp 0770 dhcp wifi
-    chown dhcp wifi /data/misc/dhcp
-
-    # radvd
-    mkdir /data/misc/radvd 0770 system system
-    chmod 444 /etc/radvd/radvd.conf
 
     # md32 boot
     chown root system /dev/md32
@@ -147,116 +124,6 @@ on post-fs-data
     # M4U
     chmod 0444 /dev/m4u
 
-#
-# Rilproxy related services (Begin)
-#
-
-#
-# Rilproxy used to control ril request/urc/response for gsm rild and c2k rild
-#
-service ril-proxy /vendor/bin/rilproxy -l mtk-rilproxy.so
-    class core
-    socket rild stream 660 root radio
-    socket rild2 stream 660 root radio
-    socket rild3 stream 660 root radio
-    socket rild4 stream 660 root radio
-    socket rilproxy-atci stream 660 root radio
-    socket rilproxy-mal stream 660 radio system
-    socket sap_uim_socket1 stream 660 bluetooth bluetooth
-    socket sap_uim_socket2 stream 660 bluetooth bluetooth
-    socket sap_uim_socket3 stream 660 bluetooth bluetooth
-    socket sap_uim_socket4 stream 660 bluetooth bluetooth
-    socket embmsd stream 660 radio inet
-    user root
-    group radio cache inet misc audio sdcard_r sdcard_rw log system
-    oneshot
-    disabled
-
-service ril-daemon-mtk /vendor/bin/mtkrild
-    class core
-    socket mrild stream 660 root radio
-    socket mrild2 stream 660 root radio
-    socket mrild3 stream 660 root radio
-    socket mrild4 stream 660 root radio
-    socket rild-ims stream 660 root radio
-    socket rild-debug stream 660 radio system
-    socket rild-oem stream 660 radio system
-    socket rild-mtk-ut stream 660 radio net_bt
-    socket rild-mtk-ut-2 stream 660 radio net_bt
-    socket rild-mtk-modem stream 660 radio system
-    socket rild-atci stream 660 root radio
-    socket rild-mal stream 660 radio system
-    socket rild-mal-at stream 660 radio system
-    socket rild-vsim stream 660 root radio
-    socket rild-mbim stream 660 root radio
-    socket msap_uim_socket1 stream 660 radio radio
-    socket msap_uim_socket2 stream 660 radio radio
-    user root
-    group radio cache inet misc audio sdcard_r sdcard_rw log system
-    disabled
-    oneshot
-
-on property:ril.rilproxy=1
-    start ril-proxy
-
-
-#
-# Rilproxy related services (End)
-#
-
-##
-#
-# volte_rcs_ua specific system properties
-#
-on property:ril.volte.stack.rcsuaproxy=1
-		start volte_rcs_ua
-
-on property:ril.volte.stack.rcsuaproxy=0
-		stop volte_rcs_ua
-
-service volte_ua /vendor/bin/volte_ua
-    class core
-    socket volte_ua stream 660 root system
-    user root
-    group system log inet radio net_admin root
-    oneshot
-    disabled
-
-service volte_stack /vendor/bin/volte_stack
-    class core
-    socket volte_stack stream 660 root system
-    user root
-    group system log inet radio
-    oneshot
-    disabled
-
-service volte_imcb /vendor/bin/volte_imcb
-    class core
-    socket volte_imsa1 stream 660 root radio
-    socket volte_imsa2 stream 660 root radio
-    socket volte_imsvt1 stream 660 root radio
-    socket volte_imsvt2 stream 660 root radio
-    socket volte_ut stream 660 root radio
-    user system
-    group system log inet radio
-    oneshot
-    disabled
-
-#
-# volte_rcs_ua specific system service and socket information
-#
-service volte_rcs_ua /vendor/bin/volte_rcs_ua
-    class core
-    socket rcs_ua_proxy stream 666 root system
-    user system
-    group system log inet radio
-    oneshot
-    disabled
-
-#
-# VoLTE related services (End)
-#
-
     #set mlock limit to infinite (for m4u operation)
     setrlimit 8 -1 -1
 
@@ -287,10 +154,11 @@ service volte_rcs_ua /vendor/bin/volte_rcs_ua
     chmod 0660 /sys/devices/platform/gsensor/driver/cpsrange
     chmod 0660 /sys/devices/platform/gsensor/driver/cpsbandwidth
 
-    chmod 0440 /sys/devices/soc/soc:gsensor@0/driver/pmrelax
-    chmod 0660 /sys/devices/soc/soc:gsensor@0/driver/tilt
-    chown system input /sys/devices/soc/soc:gsensor@0/driver/pmrelax
-    chown system input /sys/devices/soc/soc:gsensor@0/driver/tilt
+    chown system /sys/devices/platform/msensor/driver/cpsopmode
+    chown system /sys/devices/platform/msensor/driver/cpsreptxy
+    chown system /sys/devices/platform/msensor/driver/cpsreptz
+    chown system /sys/devices/platform/gsensor/driver/cpsopmode
+    chown system /sys/devices/platform/gsensor/driver/cpsrange
 
     chown system system /dev/hwmsensor
     chown system system /dev/msensor
@@ -551,19 +419,11 @@ service volte_rcs_ua /vendor/bin/volte_rcs_ua
     #EM eint
     chown root diag /sys/bus/platform/drivers/eint/current_eint
 
-    # for ppp options file
-    mkdir /data/misc/ppp 0770 bluetooth net_bt
-
-    # for libipsec_ims
-    mkdir /data/misc/setkey 0770 root system
-    restorecon /data/misc/setkey
-
     # Android SEC related device nodes
     chmod 0660 /dev/sec
     chown root system /dev/sec
 
     # FM Radio device node
-    mknod /dev/fm     c 193 0;
     chmod 0660 /dev/fm
     chown media media /dev/fm
 
@@ -589,9 +449,6 @@ service volte_rcs_ua /vendor/bin/volte_rcs_ua
     # HDMI
     chown media system /dev/hdmitx
     chmod 0664 /dev/hdmitx
-
-    # JPEG
-    #chmod 0444 /dev/mtk_jpeg
 
     # almk
     chmod 0440 /dev/mtk_almk
@@ -737,13 +594,6 @@ on boot
     chmod 0770 /sys/power/tuxonice
     chmod 0220 /sys/power/tuxonice/do_hibernate
 
-
-
-# permissions for NFC
-		setprop ro.nfc.port "I2C"
-		chmod 0600 /dev/pn54x
-		chown nfc nfc /dev/pn54x
-
 # Smartbook Handler Framework
     chown system system /sys/power/sb_state
     chmod 0660 /sys/power/sb_state
@@ -846,36 +696,6 @@ service nvram_daemon /system/bin/nvram_daemon
     user root
     group system
     oneshot
-
-#CEI comments start
-#Add NVRAM
-service nvram_tuba /system/bin/nvram_tuba
-    class main
-    user root
-    oneshot
-#CEI comments end
-
-service stop_modem /vendor/bin/md_ctrl 0
-    class main
-    disabled
-    oneshot
-
-service start_modem /vendor/bin/md_ctrl 1
-    class main
-    disabled
-    oneshot
-# Define TCP buffer sizes for various networks
-#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.umts    4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hspa    4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hsupa   4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hsdpa   4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
 
 # SPM firmware loader
 service spm_script /system/bin/spm_loader
@@ -985,16 +805,6 @@ service memsicd3416x /system/bin/memsicd3416x
     group system
     class main
 
-# CEI comments start
-# [BugID:13]2015/07/28 Jiahan Li:NLED driver porting
-service led_service /system/bin/led_service
-    class main
-    socket led_socket stream 660 system system
-    user system
-    group system
-    #oneshot
-# CEI comments end
-
 service akmd8975 /system/bin/akmd8975
     disabled
     user system
@@ -1022,12 +832,6 @@ service bmm050d /system/bin/bmm050d
 service mc6420d /system/bin/mc6420d
     disabled
     user system
-    group system
-    class main
-
-service qmc5983d /vendor/bin/qmc5983d
-     disabled
-	 user system
     group system
     class main
 
@@ -1066,11 +870,6 @@ service thermal_manager /system/bin/thermal_manager
     oneshot
 
 service fuelgauged /system/bin/fuelgauged
-    class main
-    user system
-    group system
-
-service NvRAMAgent /vendor/bin/nvram_agent_binder
     class main
     user system
     group system
@@ -1126,4 +925,3 @@ service etsd /system/bin/etsd
 on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
     setprop sys.io.scheduler bfq
-
