@@ -199,6 +199,7 @@
 /dev/rtc[0-9]+ u:object_r:rtc_device:s0
 /dev/RT_Monitor(/.*)? u:object_r:RT_Monitor_device:s0
 /dev/kick_powerkey(/.*)? u:object_r:kick_powerkey_device:s0
+/dev/socket/led_socket(/.*)? u:object_r:led_service_socket:s0
 /dev/seccfg(/.*)? u:object_r:seccfg_device:s0
 /dev/sec_ro(/.*)? u:object_r:sec_ro_device:s0
 /dev/sec(/.*)? u:object_r:sec_device:s0

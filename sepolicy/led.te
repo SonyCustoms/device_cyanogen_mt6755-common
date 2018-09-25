@@ -1,0 +1,8 @@
+#led_service
+
+type led_service_device, dev_type;
+type led_service, dev_type;
+
+#led_service_socket
+
+type led_service_socket, dev_type;

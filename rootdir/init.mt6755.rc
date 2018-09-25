@@ -763,6 +763,16 @@ service mnld /system/bin/mnld
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
     socket mnld stream 660 gps system
 
+# CEI comments start
+# [BugID:13]2015/07/28 Jiahan Li:NLED driver porting
+service led_service /system/bin/led_service
+    class main
+    socket led_socket stream 660 system system
+    user system
+    group system
+    #oneshot
+# CEI comments end
+
 service MPED /system/bin/MPED
     class main
     user gps
