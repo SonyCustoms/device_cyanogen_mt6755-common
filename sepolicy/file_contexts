@@ -125,6 +125,7 @@
 /dev/hid-keyboard(/.*)? u:object_r:hid_keyboard_device:s0
 /dev/hotknot(/.*)? u:object_r:hotknot_device:s0
 /dev/hwmsensor(/.*)? u:object_r:hwmsensor_device:s0
+/dev/mtkfb_vsync u:object_r:gpu_device:s0
 /dev/ion(/.*)? u:object_r:ion_device:s0
 /dev/kd_camera_flashlight(/.*)? u:object_r:kd_camera_flashlight_device:s0
 /dev/kd_camera_hw_bus2(/.*)? u:object_r:kd_camera_hw_bus2_device:s0
