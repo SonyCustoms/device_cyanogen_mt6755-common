@@ -82,7 +82,12 @@ on post-fs-data
     chown gps gps /sys/class/gpsdrv/gps/state
     chown gps gps /sys/class/gpsdrv/gps/pwrsave
     chown gps gps /sys/class/gpsdrv/gps/status
+        # dhcp server
+    mkdir /data/misc/dhcp 0770 dhcp wifi
+    chown dhcp wifi /data/misc/dhcp
 
+    # dhcpv6 server
+    mkdir /data/misc/wide-dhcpv6 0770 dhcp wifi
     # NFC
     mkdir /data/nfc_socket 0771 nfc radio
 
@@ -904,6 +909,7 @@ service pq /system/bin/pq
     class main
     user system
     group system graphics
+
 
 service guiext-server /system/bin/guiext-server
     class main
