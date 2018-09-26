@@ -1,5 +1,0 @@
-type led_service_socket, domain;
-type led_service_socket_exec, exec_type, file_type;
-
-init_daemon_domain(led_service_socket)
-allow led_service_socket led_service_socket_device:chr_file rw_file_perms;
