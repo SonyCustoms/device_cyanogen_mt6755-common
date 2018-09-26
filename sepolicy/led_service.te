@@ -1,0 +1,5 @@
+type led_service, domain;
+type led_service_exec, exec_type, file_type;
+
+init_daemon_domain(led_service)
+allow led_service led_service_device:chr_file rw_file_perms;

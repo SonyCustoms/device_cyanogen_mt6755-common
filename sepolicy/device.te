@@ -107,6 +107,8 @@ type cpu_dma_latency_device, dev_type;
 type dummy_cam_cal_device, dev_type;
 type ebr_device, dev_type;
 type expdb_device, dev_type;
+type led_service_device, dev_type;
+type led_service_socket_device, dev_type;
 type fat_device, dev_type;
 type logo_device, dev_type;
 type loop-control_device, dev_type;
