@@ -18,4 +18,5 @@ allow ueventd sysfs_scp:file { write open };
 # Nougat
 allow ueventd device:chr_file { relabelfrom };
 allow ueventd fm_device:chr_file { relabelto };
-allow ueventd wmtWifi_device:chr_file relabelto;
+allow ueventd wmtWifi_device:chr_file { relabelfrom };
+allow ueventd wmtWifi_device:chr_file { relabelto };
