@@ -325,7 +325,8 @@
 /dev/irtx u:object_r:irtx_device:s0
 /dev/ir-learning u:object_r:irrx_device:s0
 /dev/spm(/.*)? u:object_r:spm_device:s0
-
+/dev/socket/led_socket(/.*)?	u:object_r:led_service_socket:s0
+/system/bin/led_service	u:object_r:led_service_exec:s0
 /dev/xt_qtaguid(/.*)? u:object_r:xt_qtaguid_device:s0
 /dev/pmic_ftm(/.*)? u:object_r:pmic_ftm_device:s0
 /dev/shf  u:object_r:shf_device:s0
