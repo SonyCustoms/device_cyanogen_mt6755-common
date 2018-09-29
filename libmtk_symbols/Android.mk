@@ -22,6 +22,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := \
     icu55.c \
+    net.c \
     mtk_audio.cpp \
     mtk_bionic.cpp \
     mtk_gui.cpp \

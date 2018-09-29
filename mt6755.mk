@@ -130,6 +130,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
     charger_res_images
 
+# Available languages
+PRODUCT_LOCALES := en_US en_GB ru_RU uk_UA
 
 # Key Layouts
 PRODUCT_COPY_FILES += \

@@ -145,6 +145,9 @@ on post-fs-data
     chmod 0664 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
     chown system media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
 
+    # Fix permission for telephony
+    chmod 0644 /proc/cmdline
+
     # Sensor
     chmod 0660 /dev/hwmsensor
     chmod 0660 /dev/msensor
