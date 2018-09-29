@@ -62,6 +62,7 @@ on post-fs-data
     chmod 0771 /nvdata
     symlink /nvdata /data/nvram
     mkdir /nvdata/media 0771 media audio
+    mkdir /data/misc/keystore 0700 keystore keystore
 
     # Set SELinux security contexts on upgrade or policy update.
     restorecon_recursive /nvdata
