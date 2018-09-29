@@ -1,9 +1,39 @@
-# ==============================================
-# MTK Policy Rule
-# ==============================================
-
-# Date : WK15.49
-# Operation : Migration
-# Purpose: Trustonic HW-backed Gatekeeper
+allow gatekeeperd ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gatekeeperd ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gatekeeperd gatekeeper_data_file:dir { search read lock getattr write ioctl remove_name open add_name };
+allow gatekeeperd gatekeeper_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gatekeeperd gatekeeper_service:service_manager { add find };
+allow gatekeeperd gatekeeperd:dir { search read lock getattr ioctl open };
+allow gatekeeperd gatekeeperd:fd use;
+allow gatekeeperd gatekeeperd:fifo_file { read lock getattr write ioctl open append };
+allow gatekeeperd gatekeeperd:file { read lock getattr write ioctl open append };
+allow gatekeeperd gatekeeperd:lnk_file { read lock ioctl open getattr };
+allow gatekeeperd gatekeeperd:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow gatekeeperd gatekeeperd:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow gatekeeperd gatekeeperd:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow gatekeeperd gatekeeperd_exec:file { read open getattr entrypoint execute };
+allow gatekeeperd gatekeeperd_tmpfs:file { read write };
+allow gatekeeperd guiext-server:binder { transfer call };
+allow gatekeeperd guiext-server:fd use;
+allow gatekeeperd guiext-server_service:service_manager find;
+allow gatekeeperd hardware_properties_service:service_manager find;
+allow gatekeeperd hotknot_native:binder { transfer call };
+allow gatekeeperd hotknot_native:fd use;
+allow gatekeeperd init:process sigchld;
+allow gatekeeperd keystore:binder { transfer call };
+allow gatekeeperd keystore:fd use;
+allow gatekeeperd keystore:keystore_key add_auth;
+allow gatekeeperd keystore_service:service_manager find;
 allow gatekeeperd mobicore:unix_stream_socket connectto;
 allow gatekeeperd mobicore_user_device:chr_file { read write ioctl open };
+allow gatekeeperd permission_service:service_manager find;
+allow gatekeeperd program_binary:binder { transfer call };
+allow gatekeeperd program_binary:fd use;
+allow gatekeeperd servicemanager:binder { transfer call };
+allow gatekeeperd sysfs:dir { search read lock getattr ioctl open };
+allow gatekeeperd sysfs:file { read lock ioctl open getattr };
+allow gatekeeperd sysfs:lnk_file { read lock ioctl open getattr };
+allow gatekeeperd system_server:binder { transfer call };
+allow gatekeeperd tee_device:chr_file { read lock getattr write ioctl open append };
+allow gatekeeperd teei_fp_device:chr_file { read write ioctl open };
+allow gatekeeperd user_service:service_manager find;

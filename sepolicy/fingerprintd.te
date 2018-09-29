@@ -1,0 +1,47 @@
+type goodixfingerprintd, domain;
+type goodixfingerprintd_exec, exec_type, file_type;
+type goodixfingerprintd_socket, file_type, mlstrustedobject;
+init_daemon_domain(goodixfingerprintd)
+
+type goodixfingerprintd_service, domain;
+type goodixfingerprintd_service_exec, exec_type, file_type;
+type goodixfingerprintd_service_socket, file_type, mlstrustedobject;
+init_daemon_domain(goodixfingerprintd_service)
+
+allow fingerprintd ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow fingerprintd ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow fingerprintd fingerprintd:dir { search read lock getattr ioctl open };
+allow fingerprintd fingerprintd:fd use;
+allow fingerprintd fingerprintd:fifo_file { read lock getattr write ioctl open append };
+allow fingerprintd fingerprintd:file { read lock getattr write ioctl open append };
+allow fingerprintd fingerprintd:lnk_file { read lock ioctl open getattr };
+allow fingerprintd fingerprintd:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow fingerprintd fingerprintd:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow fingerprintd fingerprintd:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow fingerprintd fingerprintd_data_file:dir { search read lock getattr write ioctl remove_name open add_name };
+allow fingerprintd fingerprintd_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow fingerprintd fingerprintd_exec:file { read open getattr entrypoint execute };
+allow fingerprintd fingerprintd_service:service_manager { add find };
+allow fingerprintd fingerprintd_tmpfs:file { read write };
+allow fingerprintd goodixfingerprintd:binder { transfer call };
+allow fingerprintd goodixfingerprintd:fd use;
+#allow fingerprintd goodixfingerprintd_service:service_manager find;
+allow fingerprintd guiext-server:binder { transfer call };
+allow fingerprintd guiext-server:fd use;
+allow fingerprintd guiext-server_service:service_manager find;
+allow fingerprintd hotknot_native:binder { transfer call };
+allow fingerprintd hotknot_native:fd use;
+allow fingerprintd init:process sigchld;
+allow fingerprintd keystore:binder { transfer call };
+allow fingerprintd keystore:fd use;
+allow fingerprintd keystore:keystore_key add_auth;
+allow fingerprintd keystore_service:service_manager find;
+allow fingerprintd permission_service:service_manager find;
+allow fingerprintd program_binary:binder { transfer call };
+allow fingerprintd program_binary:fd use;
+allow fingerprintd servicemanager:binder { transfer call };
+allow fingerprintd sysfs:dir { search read lock getattr ioctl open };
+allow fingerprintd sysfs:file { read lock ioctl open getattr };
+allow fingerprintd sysfs:lnk_file { read lock ioctl open getattr };
+allow fingerprintd system_server:binder { transfer call };
+allow fingerprintd system_server:fd use;
