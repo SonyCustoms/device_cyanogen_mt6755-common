@@ -87,9 +87,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/fmr/mt6627_fm_cust.cfg:system/etc/fmr/mt6627_fm_cust.cfg
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/prebuilts/proprietary/lib/hw/radio.fm.mt6755.so:system/lib/hw/radio.fm.mt6755.so
-
 # GPS
 $(call inherit-product, device/common/gps/gps_us_supl.mk)
 
@@ -125,15 +122,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml \
-#    $(LOCAL_PATH)/prebuilts/proprietary/bin/mtkrild:system/bin/mtkrild \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmal.so:system/lib/libmal.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmal.so:system/lib64/libmal.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib/libmdfx.so:system/lib/libmdfx.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/libmdfx.so:system/lib64/libmdfx.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib/librilmtk.so:system/lib/librilmtk.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/librilmtk.so:system/lib64/librilmtk.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib/mtk-ril.so:system/lib/mtk-ril.so \
-#    $(LOCAL_PATH)/prebuilts/proprietary/lib64/mtk-ril.so:system/lib64/mtk-ril.so
 
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.com.android.mobiledata=false
