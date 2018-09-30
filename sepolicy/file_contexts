@@ -501,7 +501,7 @@
 /system/bin/sbchk u:object_r:sbchk_exec:s0
 /system/bin/OperaMaxSystem u:object_r:tunman_exec:s0
 /system/etc/sensor(/.*)?	u:object_r:system_sensor_data_file:s0
-/system/vendor/bin/pvrsrvctl u:object_r:pvrsrvctl_exec:s0
+/system/bin/pvrsrvctl u:object_r:pvrsrvctl_exec:s0
 /system/xbin/BGW u:object_r:BGW_exec:s0
 /system/xbin/mnld u:object_r:mnld_exec:s0
 /system/xbin/MPED u:object_r:MPED_exec:s0
