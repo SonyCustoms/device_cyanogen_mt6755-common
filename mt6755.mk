@@ -84,12 +84,17 @@ PRODUCT_PACKAGES += \
     libaudio-resampler \
     libaudiosetting \
     libaudiopolicymanager \
-    audio_policy.stub \
+    audio_policy.default \
     libtinyalsa \
     libtinycompress \
     libtinymix \
     libtinyxml \
     libfs_mgr
+
+PRODUCT_PACKAGES += \
+    EngineerMode \
+    YGPS
+
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/audio/a2dp_audio_policy_configuration.xml:system/etc/a2dp_audio_policy_configuration.xml \
@@ -180,13 +185,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/media_codecs_mediatek_video.xml:system/etc/media_codecs_mediatek_video.xml \
     $(LOCAL_PATH)/configs/mtk_omx_core.cfg:system/etc/mtk_omx_core.cfg
 
-ifeq ($(NXP_SMARTPA_SUPPORT), yes)
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio_policy.conf_NXP:system/etc/audio_policy.conf
-else
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/audio_policy.conf:system/etc/audio_policy.conf
-endif
 
 # Build proprietary bits when available
 ifneq ($(MTKPATH),)

@@ -38,6 +38,7 @@ TARGET_2ND_CPU_ABI := armeabi-v7a
 TARGET_2ND_CPU_ABI2 := armeabi
 TARGET_2ND_CPU_VARIANT := cortex-a53
 
+# Disable memcpy opt (for audio libraries)
 TARGET_CPU_MEMCPY_OPT_DISABLE := true
 
 BOARD_FLASH_BLOCK_SIZE := 4096
@@ -50,8 +51,6 @@ TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.mt6755
 
 # Audio
 BOARD_USES_MTK_AUDIO := true
-USE_XML_AUDIO_POLICY_CONF := 1
-USE_CUSTOM_AUDIO_POLICY := 1
 
 # Bootloader
 TARGET_NO_BOOTLOADER := true
