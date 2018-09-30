@@ -41,13 +41,39 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
     $(LOCAL_PATH)/recovery/sbin/fuelgauged_static:recovery/root/sbin/fuelgauged_static
 
-ifneq ($(TARGET_BUILD_VARIANT), user)
-# ADB Debugging
-ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.adb.secure=0 \
-    ro.debuggable=1 \
-    ro.secure=0
-endif
+# WiFi
+PRODUCT_PACKAGES += \
+    dhcpcd.conf \
+    hostapd \
+    libwpa_client \
+    wpa_supplicant \
+    wpa_supplicant.conf \
+    lib_driver_cmd_mt66xx
+
+# Disable adb security
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+	ro.mount.fs=EXT4 \
+	ro.adb.secure=0 \
+	ro.secure=0 \
+	ro.allow.mock.location=0 \
+	ro.debuggable=1 \
+	persist.service.acm.enable=0 \
+	camera.disable_zsl_mode=1 \
+	persist.radio.lte.chip=0 \
+	persist.sys.usb.config=mtp,adb
+
+# Media
+PRODUCT_PROPERTY_OVERRIDES += \
+    media.stagefright.legacyencoder=0
+
+PRODUCT_PACKAGES += \
+    libstagefright_color_conversion
+
+# Properties
+PRODUCT_PROPERTY_OVERRIDES += \
+	persist.radio.apn_delay=5000 \
+	persist.sys.media.use-awesome=false \
+	media.stagefright.use-awesome=false
 
 # Audio
 PRODUCT_PACKAGES += \

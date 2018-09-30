@@ -1,3 +1,16 @@
+/*
+ * Copyright (C) 2015 MediaTek Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
+
 #ifndef _VAL_API_PUBLIC_H_
 #define _VAL_API_PUBLIC_H_
 
@@ -317,18 +330,6 @@ VAL_RESULT_T eVideoLockHW(VAL_HW_LOCK_T *a_prParam, VAL_UINT32_T  a_u4ParamSize)
  *   VAL_RESULT_T       [OUT] VAL_RESULT_NO_ERROR for success, VAL_RESULT_UNKNOWN_ERROR for fail
  */
 VAL_RESULT_T eVideoUnLockHW(VAL_HW_LOCK_T *a_prParam, VAL_UINT32_T  a_u4ParamSize);
-
-/**
- * @par Function
- *   eVideoIncLogCount
- * @par Description
- *   The single/multiple instance usage function, to increase or decrease kernel log detect count
- * @param
- *   a_prParam          [IN] Indicate to increase or decrease kernel log detect count
- * @par Returns
- *   VAL_RESULT_T       [OUT] VAL_RESULT_NO_ERROR for success, VAL_RESULT_UNKNOWN_ERROR for fail
- */
-VAL_RESULT_T eVideoIncLogCount( VAL_BOOL_T *a_prParam);
 
 
 /**

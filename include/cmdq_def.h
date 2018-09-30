@@ -1,12 +1,25 @@
+/*
+ * Copyright (C) 2015 MediaTek Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
+
 #ifndef __CMDQ_DEF_H__
 #define __CMDQ_DEF_H__
 
 #include <linux/kernel.h>
 
-#define CMDQ_DRIVER_DEVICE_NAME         "mtk_cmdq"
+#include "cmdq_event_common.h"
+#include "cmdq_subsys_common.h"
 
-/* Load HW event from device tree */
-#define CMDQ_DVENT_FROM_DTS
+#define CMDQ_DRIVER_DEVICE_NAME         "mtk_cmdq"
 
 /* #define CMDQ_COMMON_ENG_SUPPORT */
 #ifdef CMDQ_COMMON_ENG_SUPPORT
@@ -18,23 +31,141 @@
 #define CMDQ_SPECIAL_SUBSYS_ADDR (99)
 
 #define CMDQ_GPR_SUPPORT
-#define CMDQ_PROFILE_MARKER_SUPPORT
 
-#ifdef CMDQ_PROFILE_MARKER_SUPPORT
 #define CMDQ_MAX_PROFILE_MARKER_IN_TASK (5)
-#endif
 
-#define CMDQ_INVALID_THREAD             (-1)
+#define CMDQ_INVALID_THREAD		(-1)
 
-#define CMDQ_MAX_THREAD_COUNT           (16)
-#define CMDQ_MAX_TASK_IN_THREAD         (16)
-#define CMDQ_MAX_READ_SLOT_COUNT        (4)
-#define CMDQ_INIT_FREE_TASK_COUNT       (8)
+#define CMDQ_MAX_THREAD_COUNT		(16)
+#define CMDQ_MAX_TASK_IN_THREAD		(16)
+#define CMDQ_MAX_READ_SLOT_COUNT	(4)
+#define CMDQ_INIT_FREE_TASK_COUNT	(8)
 
 #define CMDQ_MAX_HIGH_PRIORITY_THREAD_COUNT (7)	/* Thread that are high-priority (display threads) */
-#define CMDQ_MIN_SECURE_THREAD_ID		(12)
+#define CMDQ_DELAY_THREAD_ID		CMDQ_MAX_HIGH_PRIORITY_THREAD_COUNT
+#define CMDQ_MIN_SECURE_THREAD_ID	(CMDQ_DELAY_THREAD_ID + 1)
 #define CMDQ_MAX_SECURE_THREAD_COUNT	(3)
-typedef enum CMDQ_SCENARIO_ENUM {
+
+#ifdef CMDQ_SECURE_PATH_SUPPORT
+#define CMDQ_DYNAMIC_THREAD_ID_START	(CMDQ_MIN_SECURE_THREAD_ID + CMDQ_MAX_SECURE_THREAD_COUNT)
+#else
+#define CMDQ_DYNAMIC_THREAD_ID_START	(CMDQ_DELAY_THREAD_ID + 1)
+#endif
+
+#define CMDQ_MAX_ERROR_COUNT            (2)
+#define CMDQ_MAX_RETRY_COUNT            (1)
+/* ram optimization related configuration */
+#ifdef CONFIG_MTK_GMO_RAM_OPTIMIZE
+#define CMDQ_MAX_RECORD_COUNT           (64)
+#else
+#define CMDQ_MAX_RECORD_COUNT           (128)
+#endif
+
+#define CMDQ_INITIAL_CMD_BLOCK_SIZE     (PAGE_SIZE)
+#define CMDQ_INST_SIZE                  (2 * sizeof(uint32_t))	/* instruction is 64-bit */
+#define CMDQ_CMD_BUFFER_SIZE		(PAGE_SIZE - 32 * CMDQ_INST_SIZE)
+#define CMDQ_DMA_POOL_COUNT		8
+
+#define CMDQ_MAX_LOOP_COUNT             (1000000)
+#define CMDQ_MAX_INST_CYCLE             (27)
+#define CMDQ_MIN_AGE_VALUE              (5)
+#define CMDQ_MAX_ERROR_SIZE             (8 * 1024)
+
+#define CMDQ_MAX_TASK_IN_SECURE_THREAD	(10)
+
+/* max value of CMDQ_THR_EXEC_CMD_CNT (value starts from 0) */
+#ifdef CMDQ_USE_LARGE_MAX_COOKIE
+#define CMDQ_MAX_COOKIE_VALUE           (0xFFFFFFFF)
+#else
+#define CMDQ_MAX_COOKIE_VALUE           (0xFFFF)
+#endif
+#define CMDQ_ARG_A_SUBSYS_MASK          (0x001F0000)
+
+#ifdef CONFIG_MTK_FPGA
+#define CMDQ_DEFAULT_TIMEOUT_MS         (10000)
+#else
+#define CMDQ_DEFAULT_TIMEOUT_MS         (1000)
+#endif
+
+#define CMDQ_ACQUIRE_THREAD_TIMEOUT_MS  (2000)
+#define CMDQ_PREDUMP_TIMEOUT_MS         (200)
+
+#ifndef CONFIG_MTK_FPGA
+#define CMDQ_PWR_AWARE		/* FPGA does not have ClkMgr */
+#else
+#undef CMDQ_PWR_AWARE
+#endif
+
+#ifdef CMDQ_SECURE_PATH_HW_LOCK
+#undef CMDQ_SECURE_PATH_NORMAL_IRQ
+#endif
+
+typedef u64 CMDQ_VARIABLE;
+/*
+* SPR / CPR / VAR naming rule and number
+**********************************************
+*              <-  SPR    ->   <-            CPR            ->
+*           reserved              < FREE use >   <  delay >
+* VAR#     0    1    2    3    4    5    6    7    8    9    10
+* CPR#                            0    1    2    3    4    5    6
+*/
+
+#define CMDQ_SPR_FOR_TEMP			(0)
+#define CMDQ_SPR_FOR_LOOP_DEBUG		(1)
+#define CMDQ_THR_SPR_START			(2)
+#define CMDQ_THR_SPR_MAX			(4)
+#define CMDQ_THR_FREE_CPR_MAX		(4)
+#define CMDQ_THR_FREE_USR_VAR_MAX	(CMDQ_THR_SPR_MAX+CMDQ_THR_FREE_CPR_MAX)
+#define CMDQ_THR_CPR_MAX			(CMDQ_THR_FREE_CPR_MAX + 0)
+#define CMDQ_THR_VAR_MAX			(CMDQ_THR_SPR_MAX+CMDQ_THR_CPR_MAX)
+#define CMDQ_TPR_ID					(56)
+#define CMDQ_CPR_STRAT_ID			(0x8000)
+#define CMDQ_SRAM_STRAT_ADDR		(0x0)
+#define CMDQ_GPR_V3_OFFSET			(0x20)
+#define CMDQ_POLLING_TPR_MASK_BIT	(10)
+#define CMDQ_SRAM_ADDR(CPR_OFFSRT)	(((CMDQ_SRAM_STRAT_ADDR + CPR_OFFSRT / 2) << 3) + 0x001)
+#define CMDQ_CPR_OFFSET(SRAM_ADDR)	(((SRAM_ADDR >> 3) - CMDQ_SRAM_STRAT_ADDR) * 2)
+#define CMDQ_INVALID_CPR_OFFSET		(0xFFFFFFFF)
+
+#define CMDQ_MAX_SRAM_OWNER_NAME	(32)
+
+#define CMDQ_DELAY_TPR_MASK_BIT		(11)
+#define CMDQ_DELAY_TPR_MASK_VALUE	(1 << 17 | 1 << 14 | 1 << 11)
+
+#define CMDQ_DELAY_MAX_SET		(3)
+#define CMDQ_DELAY_SET_START_CPR	(0)
+#define CMDQ_DELAY_SET_DURATION_CPR	(1)
+#define CMDQ_DELAY_SET_RESULT_CPR	(2)
+#define CMDQ_DELAY_SET_MAX_CPR		(3)
+#define CMDQ_DELAY_THD_SIZE		(64 * 64)	/* delay inst in bytes */
+
+/* #define CMDQ_DUMP_GIC (0) */
+/* #define CMDQ_PROFILE_MMP (0) */
+
+#define CMDQ_DUMP_FIRSTERROR
+/* #define CMDQ_INSTRUCTION_COUNT */
+
+enum CMDQ_HW_THREAD_PRIORITY_ENUM {
+	CMDQ_THR_PRIO_SUPERLOW = 0,	/* low priority monitor loop */
+
+	CMDQ_THR_PRIO_NORMAL = 1,	/* nomral priority */
+	CMDQ_THR_PRIO_DISPLAY_TRIGGER = 2,	/* trigger loop (enables display mutex) */
+
+	/* display ESD check (every 2 secs) */
+#ifdef CMDQ_SPECIAL_ESD_PRIORITY
+	CMDQ_THR_PRIO_DISPLAY_ESD = 3,
+#else
+	CMDQ_THR_PRIO_DISPLAY_ESD = 4,
+#endif
+
+	CMDQ_THR_PRIO_DISPLAY_CONFIG = 4,	/* display config (every frame) */
+
+	CMDQ_THR_PRIO_SUPERHIGH = 5,	/* High priority monitor loop */
+
+	CMDQ_THR_PRIO_MAX = 7,	/* maximum possible priority */
+};
+
+enum CMDQ_SCENARIO_ENUM {
 	CMDQ_SCENARIO_JPEG_DEC = 0,
 	CMDQ_SCENARIO_PRIMARY_DISP = 1,
 	CMDQ_SCENARIO_PRIMARY_MEMOUT = 2,
@@ -60,9 +191,6 @@ typedef enum CMDQ_SCENARIO_ENUM {
 	CMDQ_SCENARIO_DISP_ESD_CHECK = 15,
 	/* for screen capture to wait for RDMA-done without blocking config thread */
 	CMDQ_SCENARIO_DISP_SCREEN_CAPTURE = 16,
-
-	/* notifiy there are some tasks exec done in secure path */
-	CMDQ_SCENARIO_SECURE_NOTIFY_LOOP = 17,
 
 	CMDQ_SCENARIO_DISP_PRIMARY_DISABLE_SECURE_PATH = 18,
 	CMDQ_SCENARIO_DISP_SUB_DISABLE_SECURE_PATH = 19,
@@ -91,14 +219,18 @@ typedef enum CMDQ_SCENARIO_ENUM {
 	CMDQ_SCENARIO_RDMA2_DISP = 34,
 
 	CMDQ_SCENARIO_HIGHP_TRIGGER_LOOP = 35,	/* for primary trigger loop enable pre-fetch usage */
-	CMDQ_SCENARIO_LOWP_TRIGGER_LOOP = 36,	/* for low priority monitor loop to polling bus status*/
+	CMDQ_SCENARIO_LOWP_TRIGGER_LOOP = 36,	/* for low priority monitor loop to polling bus status */
 
 	CMDQ_SCENARIO_KERNEL_CONFIG_GENERAL = 37,
 
-	CMDQ_MAX_SCENARIO_COUNT	/* ALWAYS keep at the end */
-} CMDQ_SCENARIO_ENUM;
+	CMDQ_SCENARIO_TIMER_LOOP = 38,
+	CMDQ_SCENARIO_MOVE = 39,
+	CMDQ_SCENARIO_SRAM_LOOP = 40,
 
-typedef enum CMDQ_DATA_REGISTER_ENUM {
+	CMDQ_MAX_SCENARIO_COUNT	/* ALWAYS keep at the end */
+};
+
+enum CMDQ_DATA_REGISTER_ENUM {
 	/* Value Reg, we use 32-bit */
 	/* Address Reg, we use 64-bit */
 	/* Note that R0-R15 and P0-P7 actullay share same memory */
@@ -121,87 +253,55 @@ typedef enum CMDQ_DATA_REGISTER_ENUM {
 
 	/* sentinel value for invalid register ID */
 	CMDQ_DATA_REG_INVALID = -1,
-} CMDQ_DATA_REGISTER_ENUM;
+};
 
-typedef enum CMDQ_MDP_PA_BASE_ENUM {
+enum CMDQ_MDP_PA_BASE_ENUM {
 	CMDQ_MDP_PA_BASE_MM_MUTEX,
 	CMDQ_MAX_MDP_PA_BASE_COUNT,		/* ALWAYS keep at the end */
-} CMDQ_MDP_PA_BASE_ENUM;
-
-/* CMDQ Events */
-#undef DECLARE_CMDQ_EVENT
-#ifdef CMDQ_DVENT_FROM_DTS
-#define DECLARE_CMDQ_EVENT(name_struct, val, dts_name) name_struct = val,
-typedef enum CMDQ_EVENT_ENUM {
-#include "cmdq_event_common.h"
-} CMDQ_EVENT_ENUM;
-#else
-#define DECLARE_CMDQ_EVENT(name_struct, val) name_struct = val,
-typedef enum CMDQ_EVENT_ENUM {
-#if CMDQ_D1_EVENT
-#include "cmdq_event_D1.h"
-#elif CMDQ_D2_EVENT
-#include "cmdq_event_D2.h"
-#elif CMDQ_D3_EVENT
-#include "cmdq_event_D3.h"
-#else
-#include "cmdq_event.h"
-#endif
-} CMDQ_EVENT_ENUM;
-#endif
-#undef DECLARE_CMDQ_EVENT
-
-/* CMDQ subsys */
-#undef DECLARE_CMDQ_SUBSYS
-#define DECLARE_CMDQ_SUBSYS(name_struct, val, grp, dts_name) name_struct = val,
-typedef enum CMDQ_SUBSYS_ENUM {
-#include "cmdq_subsys_common.h"
-
-	/* ALWAYS keep at the end */
-	CMDQ_SUBSYS_MAX_COUNT
-} CMDQ_SUBSYS_ENUM;
-#undef DECLARE_CMDQ_SUBSYS
+};
 
 #define CMDQ_SUBSYS_GRPNAME_MAX		(30)
 /* GCE subsys information */
-typedef struct SubsysStruct {
+struct SubsysStruct {
 	uint32_t msb;
 	int32_t subsysID;
 	uint32_t mask;
 	char grpName[CMDQ_SUBSYS_GRPNAME_MAX];
-} SubsysStruct;
+};
 
-typedef struct cmdqDTSDataStruct {
+struct cmdqDTSDataStruct {
 	/* [Out] GCE event table */
 	int32_t eventTable[CMDQ_SYNC_TOKEN_MAX];
 	/* [Out] GCE subsys ID table */
-	SubsysStruct subsys[CMDQ_SUBSYS_MAX_COUNT];
+	struct SubsysStruct subsys[CMDQ_SUBSYS_MAX_COUNT];
 	/* [Out] MDP Base address */
 	uint32_t MDPBaseAddress[CMDQ_MAX_MDP_PA_BASE_COUNT];
-} cmdqDTSDataStruct;
+};
 
 /* Custom "wide" pointer type for 64-bit job handle (pointer to VA) */
-typedef unsigned long long cmdqJobHandle_t;
+/* typedef unsigned long long cmdqJobHandle_t; */
+#define cmdqJobHandle_t unsigned long long
 /* Custom "wide" pointer type for 64-bit compatibility. Always cast from uint32_t*. */
-typedef unsigned long long cmdqU32Ptr_t;
+/* typedef unsigned long long cmdqU32Ptr_t; */
+#define cmdqU32Ptr_t unsigned long long
 
 #define CMDQ_U32_PTR(x) ((uint32_t *)(unsigned long)x)
 
-typedef struct cmdqReadRegStruct {
+struct cmdqReadRegStruct {
 	uint32_t count;		/* number of entries in regAddresses */
 	cmdqU32Ptr_t regAddresses;	/* an array of 32-bit register addresses (uint32_t) */
-} cmdqReadRegStruct;
+};
 
-typedef struct cmdqRegValueStruct {
+struct cmdqRegValueStruct {
 	/* number of entries in result */
 	uint32_t count;
 
 	/* array of 32-bit register values (uint32_t). */
 	/* in the same order as cmdqReadRegStruct */
 	cmdqU32Ptr_t regValues;
-} cmdqRegValueStruct;
+};
 
-typedef struct cmdqReadAddressStruct {
+struct cmdqReadAddressStruct {
 	uint32_t count;		/* [IN] number of entries in result. */
 
 	/* [IN] array of physical addresses to read. */
@@ -213,7 +313,7 @@ typedef struct cmdqReadAddressStruct {
 	cmdqU32Ptr_t dmaAddresses;
 
 	cmdqU32Ptr_t values;	/* [OUT] uint32_t values that dmaAddresses point into */
-} cmdqReadAddressStruct;
+};
 
 /*
  * Secure address metadata:
@@ -224,25 +324,41 @@ typedef struct cmdqReadAddressStruct {
  *        . pass normal mva to parameter baseHandle
  *        . use case: OVL reads from secure and normal buffers at the same time)
  */
-typedef enum CMDQ_SEC_ADDR_METADATA_TYPE {
+enum CMDQ_SEC_ADDR_METADATA_TYPE {
 	CMDQ_SAM_H_2_PA = 0,	/* sec handle to sec PA */
 	CMDQ_SAM_H_2_MVA = 1,	/* sec handle to sec MVA */
 	CMDQ_SAM_NMVA_2_MVA = 2,	/* map normal MVA to secure world */
-} CMDQ_SEC_ADDR_METADATA_TYPE;
+};
 
-typedef struct cmdqSecAddrMetadataStruct {
-	/* [IN]_d, index of instruction. Update its argB value to real PA/MVA in secure world */
+struct cmdqSecAddrMetadataStruct {
+	/* [IN]_d, index of instruction. Update its arg_b value to real PA/MVA in secure world */
 	uint32_t instrIndex;
 
-	CMDQ_SEC_ADDR_METADATA_TYPE type;	/* [IN] addr handle type */
-	uint32_t baseHandle;	/* [IN]_h, secure address handle */
+	/*
+	 * Note: Buffer and offset
+	 *
+	 *   -------------
+	 *   |     |     |
+	 *   -------------
+	 *   ^     ^  ^  ^
+	 *   A     B  C  D
+	 *
+	 *	A: baseHandle
+	 *	B: baseHandle + blockOffset
+	 *  C: baseHandle + blockOffset + offset
+	 *	A~B or B~D: size
+	 */
+
+	uint32_t type;		/* [IN] addr handle type */
+	uint64_t baseHandle;	/* [IN]_h, secure address handle */
+	uint32_t blockOffset;	/* [IN]_b, block offset from handle(PA) to current block(plane) */
 	uint32_t offset;	/* [IN]_b, buffser offset to secure handle */
 	uint32_t size;		/* buffer size */
 	uint32_t port;		/* hw port id (i.e. M4U port id) */
-} cmdqSecAddrMetadataStruct;
+};
 
-typedef struct cmdqSecDataStruct {
-	bool isSecure;		/* [IN]true for secure command */
+struct cmdqSecDataStruct {
+	bool is_secure;		/* [IN]true for secure command */
 
 	/* address metadata, used to translate secure buffer PA related instruction in secure world */
 	uint32_t addrMetadataCount;	/* [IN] count of element in addrList */
@@ -255,17 +371,22 @@ typedef struct cmdqSecDataStruct {
 	/* [Reserved] This is for CMDQ driver usage itself. Not for client. */
 	int32_t waitCookie;	/* task index in thread's tasklist. -1 for not in tasklist. */
 	bool resetExecCnt;	/* reset HW thread in SWd */
-} cmdqSecDataStruct;
+};
 
-#ifdef CMDQ_PROFILE_MARKER_SUPPORT
-typedef struct cmdqProfileMarkerStruct {
+struct cmdq_v3_replace_struct {
+	/* [IN] count of element in instr_position */
+	uint32_t number;
+	/* [IN] position of instruction */
+	cmdqU32Ptr_t position;
+};
+
+struct cmdqProfileMarkerStruct {
 	uint32_t count;
 	long long hSlot;	/* i.e. cmdqBackupSlotHandle, physical start address of backup slot */
 	cmdqU32Ptr_t tag[CMDQ_MAX_PROFILE_MARKER_IN_TASK];
-} cmdqProfileMarkerStruct;
-#endif
+};
 
-typedef struct cmdqCommandStruct {
+struct cmdqCommandStruct {
 	/* [IN] deprecated. will remove in the future. */
 	uint32_t scenario;
 	/* [IN] task schedule priority. this is NOT HW thread priority. */
@@ -278,33 +399,39 @@ typedef struct cmdqCommandStruct {
 	/* [IN] size of instruction buffer, in bytes. */
 	uint32_t blockSize;
 	/* [IN] request to read register values at the end of command */
-	cmdqReadRegStruct regRequest;
+	struct cmdqReadRegStruct regRequest;
 	/* [OUT] register values of regRequest */
-	cmdqRegValueStruct regValue;
+	struct cmdqRegValueStruct regValue;
 	/* [IN/OUT] physical addresses to read value */
-	cmdqReadAddressStruct readAddress;
-	/*[IN] secure execution data */
-	cmdqSecDataStruct secData;
+	struct cmdqReadAddressStruct readAddress;
+	/* [IN] secure execution data */
+	struct cmdqSecDataStruct secData;
+	/* [IN] CPR position */
+	struct cmdq_v3_replace_struct replace_instr;
+	/* [IN] use SRAM buffer or not */
+	bool use_sram_buffer;
+	/* [IN] SRAM buffer owner name */
+	char sram_owner_name[CMDQ_MAX_SRAM_OWNER_NAME];
 	/* [IN] set to non-zero to enable register debug dump. */
 	uint32_t debugRegDump;
 	/* [Reserved] This is for CMDQ driver usage itself. Not for client. Do not access this field from User Space */
 	cmdqU32Ptr_t privateData;
-#ifdef CMDQ_PROFILE_MARKER_SUPPORT
-	cmdqProfileMarkerStruct profileMarker;
-#endif
-} cmdqCommandStruct;
+	struct cmdqProfileMarkerStruct profileMarker;
+	cmdqU32Ptr_t userDebugStr;
+	uint32_t userDebugStrLen;
+};
 
-typedef enum CMDQ_CAP_BITS {
+enum CMDQ_CAP_BITS {
 	/* bit 0: TRUE if WFE instruction support is ready. FALSE if we need to POLL instead. */
 	CMDQ_CAP_WFE = 0,
-} CMDQ_CAP_BITS;
+};
 
 
 /**
  * reply struct for cmdq_sec_cancel_error_task
  */
 
-typedef struct {
+struct cmdqSecCancelTaskResultStruct {
 	/* [OUT] */
 	bool throwAEE;
 	bool hasReset;
@@ -312,6 +439,6 @@ typedef struct {
 	uint32_t errInstr[2];
 	uint32_t regValue;
 	uint32_t pc;
-} cmdqSecCancelTaskResultStruct;
+};
 
 #endif				/* __CMDQ_DEF_H__ */
