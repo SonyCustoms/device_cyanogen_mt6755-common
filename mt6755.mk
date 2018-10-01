@@ -65,6 +65,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_PACKAGES += \
     libstagefright_color_conversion
 
+PRODUCT_PACKAGES += \
+    YGPS
+
 # Properties
 PRODUCT_PROPERTY_OVERRIDES += \
 	persist.radio.apn_delay=5000 \
@@ -83,10 +86,6 @@ PRODUCT_PACKAGES += \
     libtinycompress \
     libtinymix \
     libtinyxml
-
-PRODUCT_PACKAGES += \
-    EngineerMode \
-    YGPS
 
 # Permissions
 PRODUCT_COPY_FILES += \
