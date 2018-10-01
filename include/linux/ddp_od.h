@@ -1,22 +1,39 @@
-/*
- * Copyright (C) 2015 MediaTek Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- */
+#ifndef __DDP_OD_H__
+#define __DDP_OD_H__
 
-#ifndef _OD_HW_REG_H__
-#define _OD_HW_REG_H__
+#include <linux/ioctl.h>
 
-void od_test(const char *cmd, char *debug_output);
-void disp_od_start_read(void *cmdq);
-int disp_od_update_status(void *cmdq);
-void disp_od_set_enabled(void *cmdq, int enabled);
+/* OD */
+typedef struct {
+    unsigned int size;
+    unsigned int type;
+    unsigned int ret;
+    unsigned int param0;
+    unsigned int param1;
+    unsigned int param2;
+    unsigned int param3;
+} DISP_OD_CMD;
+
+typedef enum{
+	OD_CTL_READ_REG,
+	OD_CTL_WRITE_REG,
+	OD_CTL_ENABLE_DEMO_MODE,
+	OD_CTL_RUN_TEST,
+	OD_CTL_WRITE_TABLE,
+	OD_CTL_CMD_NUM,
+	OD_CTL_ENABLE
+} DISP_OD_CMD_TYPE;
+
+typedef enum{
+	OD_CTL_ENABLE_OFF,
+	OD_CTL_ENABLE_ON
+} DISP_OD_ENABLE_STAGE;
+
+#define OD_CTL_ENABLE_DELAY 3
+
+/* OD */
+#define DISP_IOCTL_MAGIC        'x'
+#define DISP_IOCTL_OD_CTL           _IOWR    (DISP_IOCTL_MAGIC, 80 , DISP_OD_CMD)
+#define DISP_IOCTL_OD_SET_ENABLED   _IOWR    (DISP_IOCTL_MAGIC, 81 , int)
 
 #endif

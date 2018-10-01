@@ -1,58 +1,39 @@
-/*
- * Copyright (C) 2016 MediaTek Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- */
+#ifndef __MT65XX_SYNC_WRITE_H__
+#define __MT65XX_SYNC_WRITE_H__
 
-#ifndef _MT_SYNC_WRITE_H
-#define _MT_SYNC_WRITE_H
+#define mt_reg_sync_writel(v, a)        mt65xx_reg_sync_writel(v, a)
+#define mt_reg_sync_writew(v, a)        mt65xx_reg_sync_writew(v, a)
+#define mt_reg_sync_writeb(v, a)        mt65xx_reg_sync_writeb(v, a)
 
 #if defined(__KERNEL__)
 
 #include <linux/io.h>
 #include <asm/cacheflush.h>
+#include <asm/system.h>
 
 /*
  * Define macros.
  */
-#define mt_reg_sync_writel(v, a) \
-	do {    \
-		__raw_writel((v), (void __force __iomem *)((a)));   \
-		/* add memory barrier */ \
-		mb();  \
-	} while (0)
 
-#define mt_reg_sync_writew(v, a) \
-	do {    \
-		__raw_writew((v), (void __force __iomem *)((a)));   \
-		/* add memory barrier */ \
-		mb();  \
-	} while (0)
+#define mt65xx_reg_sync_writel(v, a) \
+        do {    \
+            writel((v), (a));   \
+            dsb();  \
+        } while (0)
 
-#define mt_reg_sync_writeb(v, a) \
-	do {    \
-		__raw_writeb((v), (void __force __iomem *)((a)));   \
-		/* add memory barrier */ \
-		mb();  \
-	} while (0)
+#define mt65xx_reg_sync_writew(v, a) \
+        do {    \
+            writew((v), (a));   \
+            dsb();  \
+        } while (0)
 
-#ifdef CONFIG_64BIT
-#define mt_reg_sync_writeq(v, a) \
-	do {    \
-		__raw_writeq((v), (void __force __iomem *)((a)));   \
-		/* add memory barrier */ \
-		mb();  \
-	} while (0)
-#endif
+#define mt65xx_reg_sync_writeb(v, a) \
+        do {    \
+            writeb((v), (a));   \
+            dsb();  \
+        } while (0)
 
-#else				/* __KERNEL__ */
+#else   /* __KERNEL__ */
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -60,37 +41,40 @@
 #include <unistd.h>
 #include <string.h>
 
-#define mt_reg_sync_writel(v, a)        mt65xx_reg_sync_writel(v, a)
-#define mt_reg_sync_writew(v, a)        mt65xx_reg_sync_writew(v, a)
-#define mt_reg_sync_writeb(v, a)        mt65xx_reg_sync_writeb(v, a)
+#define dsb()   \
+        do {    \
+            __asm__ __volatile__ ("dsb sy" : : : "memory"); \
+        } while (0)
 
-/* memory barrier */
-#define mb()   \
-	{    \
-		__asm__ __volatile__ ("dsb" : : : "memory"); \
-	}
+#define outer_sync()    \
+        do {    \
+            int fd; \
+            char buf[] = "1";   \
+            fd = open("/sys/bus/platform/drivers/outercache/outer_sync", O_WRONLY); \
+            if (fd != -1) {  \
+                write(fd, buf, strlen(buf)); \
+                close(fd); \
+            }   \
+        } while (0)
 
 #define mt65xx_reg_sync_writel(v, a) \
-	do {    \
-		*(volatile unsigned int *)(a) = (v);    \
-		/* add memory barrier */ \
-		mb(); \
-	} while (0)
+        do {    \
+            *(volatile unsigned int *)(a) = (v);    \
+            dsb(); \
+        } while (0)
 
 #define mt65xx_reg_sync_writew(v, a) \
-	do {    \
-		*(volatile unsigned short *)(a) = (v);    \
-		/* add memory barrier */ \
-		mb(); \
-	} while (0)
+        do {    \
+            *(volatile unsigned short *)(a) = (v);    \
+            dsb(); \
+        } while (0)
 
 #define mt65xx_reg_sync_writeb(v, a) \
-	do {    \
-		*(volatile unsigned char *)(a) = (v);    \
-		/* add memory barrier */ \
-		mb(); \
-	} while (0)
+        do {    \
+            *(volatile unsigned char *)(a) = (v);    \
+            dsb(); \
+        } while (0)
 
-#endif				/* __KERNEL__ */
+#endif  /* __KERNEL__ */
 
-#endif				/* !_MT_SYNC_WRITE_H */
+#endif  /* !__MT65XX_SYNC_WRITE_H__ */

@@ -1,187 +1,108 @@
-/*
-* Copyright (C) 2016 MediaTek Inc.
-*
-* This program is free software; you can redistribute it and/or modify
-* it under the terms of the GNU General Public License version 2 as
-* published by the Free Software Foundation.
-*
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-* See http://www.gnu.org/licenses/gpl-2.0.html for more details.
-*/
-
 #ifndef __VOW_H__
 #define __VOW_H__
 
-#include <linux/compat.h>
-#include <linux/fs.h>
-#include <linux/uaccess.h>
-
 /***********************************************************************************
-** VOW Type Define
+** VOW Control Message
 ************************************************************************************/
-#define DEBUG_VOWDRV 1
+#define VOW_DEVNAME "vow"
+#define VOW_IOC_MAGIC    'a'
 
-#if DEBUG_VOWDRV
-#define VOWDRV_DEBUG(format, args...) pr_debug(format, ##args)
-#else
-#define VOWDRV_DEBUG(format, args...)
-#endif
-#define VOWDRV_PR_ERR(format, args...) pr_err(format, ##args)
+static char const *const kVOWDeviceName = "/dev/vow";
 
-#define VOW_DEVNAME                    "vow"
-#define VOW_IOC_MAGIC                  'V'
-#define VOW_PRE_LEARN_MODE             1
-#define MAX_VOW_SPEAKER_MODEL          10
-#define VOW_WAITCHECK_INTERVAL_MS      1
-#define MAX_VOW_INFO_LEN               5
-#define VOW_VOICE_RECORD_THRESHOLD     2560 /* 80ms */
-#define VOW_VOICE_RECORD_BIG_THRESHOLD 8000 /* 250ms */
-#define VOW_IPI_SEND_CNT_TIMEOUT       500 /* 500ms */
-#define VOW_VOICEDATA_OFFSET           0xA000 /* VOW VOICE DATA DRAM OFFSET */
-#define WORD_H                         8
-#define WORD_L                         8
-#define WORD_H_MASK                    0xFF00
-#define WORD_L_MASK                    0x00FF
-
-/* below is control message */
-#define VOW_SET_CONTROL               _IOW(VOW_IOC_MAGIC, 0x03, unsigned int)
-#define VOW_SET_SPEAKER_MODEL         _IOW(VOW_IOC_MAGIC, 0x04, unsigned int)
-#define VOW_CLR_SPEAKER_MODEL         _IOW(VOW_IOC_MAGIC, 0x05, unsigned int)
-#define VOW_SET_APREG_INFO            _IOW(VOW_IOC_MAGIC, 0x09, unsigned int)
-#define VOW_CHECK_STATUS              _IOW(VOW_IOC_MAGIC, 0x0C, unsigned int)
-
-/***********************************************************************************
-** VOW Enum
-************************************************************************************/
-enum vow_control_cmd_t {
-	VOWControlCmd_Init = 0,
-	VOWControlCmd_ReadVoiceData,
-	VOWControlCmd_EnableDebug,
-	VOWControlCmd_DisableDebug,
-};
-
-enum vow_ipi_msgid_t {
-	IPIMSG_VOW_ENABLE = 0,
-	IPIMSG_VOW_DISABLE = 1,
-	IPIMSG_VOW_SETMODE = 2,
-	IPIMSG_VOW_APREGDATA_ADDR = 3,
-	IPIMSG_VOW_SET_MODEL = 4,
-	IPIMSG_VOW_SET_FLAG = 5,
-	IPIMSG_VOW_SET_SMART_DEVICE = 6,
-	IPIMSG_VOW_DATAREADY_ACK = 7,
-	IPIMSG_VOW_DATAREADY = 8,
-	IPIMSG_VOW_RECOGNIZE_OK = 9,
-};
-
-enum vow_eint_status_t {
-	VOW_EINT_DISABLE = -2,
-	VOW_EINT_FAIL = -1,
-	VOW_EINT_PASS = 0,
-	VOW_EINT_RETRY = 1,
-	NUM_OF_VOW_EINT_STATUS
-};
-
-enum vow_flag_type_t {
-	VOW_FLAG_DEBUG = 0,
-	VOW_FLAG_PRE_LEARN,
-	VOW_FLAG_DMIC_LOWPOWER,
-	VOW_FLAG_PERIODIC_ENABLE,
-	VOW_FLAG_FORCE_PHASE1_DEBUG,
-	VOW_FLAG_FORCE_PHASE2_DEBUG,
-	VOW_FLAG_SWIP_LOG_PRINT,
-	NUM_OF_VOW_FLAG_TYPE
-};
-
-enum vow_pwr_status_t {
-	VOW_PWR_OFF = 0,
-	VOW_PWR_ON = 1,
-	NUM_OF_VOW_PWR_STATUS
-};
-
-enum vow_ipi_result_t {
-	VOW_IPI_SUCCESS = 0,
-	VOW_IPI_CLR_SMODEL_ID_NOTMATCH,
-	VOW_IPI_SET_SMODEL_NO_FREE_SLOT,
-};
-
-enum vow_force_phase_t {
-	NO_FORCE = 0,
-	FORCE_PHASE1,
-	FORCE_PHASE2,
-};
-
-enum vow_model_type_t {
-	VOW_MODEL_INIT = 0,    /* no use */
-	VOW_MODEL_SPEAKER = 1,
-	VOW_MODEL_NOISE = 2,   /* no use */
-	VOW_MODEL_FIR = 3      /* no use */
-};
-
-/***********************************************************************************
-** VOW Structure Define
-************************************************************************************/
-struct vow_ipi_msg_t {
-	short id;
-	short size;
-	short *buf;
-};
-
-struct vow_eint_data_struct_t {
-	int size;        /* size of data section */
-	int eint_status; /* eint status */
-	int id;
-	char *data;      /* reserved for future extension */
-};
-
-
-#ifdef CONFIG_COMPAT
-
-struct vow_speaker_model_t {
-	void *model_ptr;
-	int  id;
-	int  enabled;
-};
-
-struct vow_model_info_t {
-	long  id;
-	long  addr;
-	long  size;
-	long  return_size_addr;
-	void *data;
-};
-
-struct vow_speaker_model_kernel_t {
-	compat_uptr_t *model_ptr;
-	compat_size_t  id;
-	compat_size_t  enabled;
-};
-
-struct vow_model_info_kernel_t {
-	compat_size_t  id;
-	compat_size_t  addr;
-	compat_size_t  size;
-	compat_size_t  return_size_addr;
-	compat_uptr_t *data;
-};
-
+#if 0
+//below is control message
+#define TEST_VOW_PRINT            _IO(VOW_IOC_MAGIC,  0x00)
+#define VOWEINT_GET_BUFSIZE       _IOW(VOW_IOC_MAGIC, 0x01, unsigned long)
+#define VOW_GET_STATUS            _IOW(VOW_IOC_MAGIC, 0x02, unsigned long)
+#define VOW_SET_CONTROL           _IOW(VOW_IOC_MAGIC, 0x03, unsigned long)
+#define VOW_SET_SPEAKER_MODEL     _IOW(VOW_IOC_MAGIC, 0x04, unsigned long)
+#define VOW_CLR_SPEAKER_MODEL     _IOW(VOW_IOC_MAGIC, 0x05, unsigned long)
+#define VOW_SET_INIT_MODEL        _IOW(VOW_IOC_MAGIC, 0x06, unsigned long)
+#define VOW_SET_FIR_MODEL         _IOW(VOW_IOC_MAGIC, 0x07, unsigned long)
+#define VOW_SET_NOISE_MODEL       _IOW(VOW_IOC_MAGIC, 0x08, unsigned long)
+#define VOW_SET_APREG_INFO        _IOW(VOW_IOC_MAGIC, 0x09, unsigned long)
+#define VOW_SET_REG_MODE          _IOW(VOW_IOC_MAGIC, 0x0A, unsigned long)
+#define VOW_FAKE_WAKEUP           _IOW(VOW_IOC_MAGIC, 0x0B, unsigned long)
 #else
 
-struct vow_speaker_model_t {
-	void *model_ptr;
-	int  id;
-	int  enabled;
-};
 
-struct vow_model_info_t {
-	long  id;
-	long  addr;
-	long  size;
-	long  return_size_addr;
-	void *data;
-};
+//below is control message
+#define TEST_VOW_PRINT            0x00
+#define VOWEINT_GET_BUFSIZE       0x01
+#define VOW_GET_STATUS            0x02
+#define VOW_SET_CONTROL           0x03
+#define VOW_SET_SPEAKER_MODEL     0x04
+#define VOW_CLR_SPEAKER_MODEL     0x05
+#define VOW_SET_INIT_MODEL        0x06
+#define VOW_SET_FIR_MODEL         0x07
+#define VOW_SET_NOISE_MODEL       0x08
+#define VOW_SET_APREG_INFO        0x09
+#define VOW_SET_REG_MODE          0x0A
+#define VOW_FAKE_WAKEUP           0x0B
+
 #endif
 
 
-#endif /*__VOW_H__ */
+
+/***********************************************************************************
+** Type Define
+************************************************************************************/
+enum VOW_Control_Cmd
+{
+    VOWControlCmd_Init = 0,
+    VOWControlCmd_ReadVoiceData,
+    VOWControlCmd_EnableDebug,
+    VOWControlCmd_DisableDebug,
+};
+
+typedef enum VOW_REG_MODE_T {
+   VOW_MODE_MD32_VOW = 0,
+   VOW_MODE_VOICECOMMAND,
+   VOW_MODE_MULTIPLE_KEY,
+   VOW_MODE_MULTIPLE_KEY_VOICECOMMAND
+}VOW_REG_MODE_T;
+
+typedef enum VOW_EINT_STATUS{
+    VOW_EINT_DISABLE = -2,
+    VOW_EINT_FAIL = -1,
+    VOW_EINT_PASS = 0,
+    VOW_EINT_RETRY = 1,
+    NUM_OF_VOW_EINT_STATUS
+}VOW_EINT_STATUS;
+
+typedef enum VOW_FLAG_TYPE{
+    VOW_FLAG_DEBUG,
+    VOW_FLAG_PRE_LEARN,
+    VOW_FLAG_DMIC_LOWPOWER,
+    NUM_OF_VOW_FLAG_TYPE
+}VOW_FLAG_TYPE;
+
+typedef enum VOW_PWR_STATUS{
+    VOW_PWR_OFF = 0,
+    VOW_PWR_ON = 1,
+    NUM_OF_VOW_PWR_STATUS
+}VOW_PWR_STATUS;
+
+typedef enum VOW_IPI_RESULT
+{
+   VOW_IPI_SUCCESS = 0,
+   VOW_IPI_CLR_SMODEL_ID_NOTMATCH,
+   VOW_IPI_SET_SMODEL_NO_FREE_SLOT,
+}VOW_IPI_RESULT;
+/*
+struct VOW_EINT_DATA_STRUCT{
+   int size;        // size of data section
+   int eint_status; // eint status
+   int id;
+   char *data;      // reserved for future extension
+}VOW_EINT_DATA_STRUCT;
+*/
+
+typedef struct{
+   long  id;
+   long  addr;
+   long  size;
+   void *data;
+}VOW_MODEL_INFO_T;
+
+#endif //__VOW_H__
