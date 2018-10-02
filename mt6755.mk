@@ -66,7 +66,8 @@ PRODUCT_PACKAGES += \
     libstagefright_color_conversion
 
 PRODUCT_PACKAGES += \
-    YGPS
+    YGPS \
+    EngineerMode
 
 # Properties
 PRODUCT_PROPERTY_OVERRIDES += \
