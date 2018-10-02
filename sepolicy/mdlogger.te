@@ -1,5 +1,5 @@
 # ==============================================
-# Policy File of /vendor/binmdlogger Executable File 
+# Policy File of /system/binmdlogger Executable File 
 
 
 # ==============================================
@@ -53,7 +53,7 @@ allow mdlogger zygote_exec:file { read getattr open };
 # Date : 2014/09/26
 # Operation : Migration
 # Purpose : [MDLOGGER] [mdlogger usb logging tcp_socket]
-# Package: vendor/bin/mdlogger
+# Package: system/bin/mdlogger
 
 allow mdlogger fuse:dir search;
 allow mdlogger node:tcp_socket node_bind;

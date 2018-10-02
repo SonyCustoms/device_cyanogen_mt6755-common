@@ -123,7 +123,7 @@ allow debuggerd app_data_file:dir search;
 allow debuggerd system_app_data_file:file r_file_perms;
 allow debuggerd app_data_file:file r_file_perms;
 
-# /vendor/bin/am
+# /system/bin/am
 allow debuggerd system_file:file execute_no_trans;
 allow debuggerd zygote_exec:file { execute execute_no_trans };
 

@@ -1,5 +1,5 @@
 # ==============================================
-# Policy File of /vendor/bin/atcp Executable File
+# Policy File of /system/bin/atcp Executable File
 
 
 # ==============================================
@@ -431,7 +431,7 @@ allow atcp qtaguid_proc:file { read getattr open };
 allow atcp self:capability net_admin;
 allow atcp self:udp_socket create;
 allow atcp system_file:file execute_no_trans;
-#/vendor/bin/aee
+#/system/bin/aee
 #allow atcp aee_exec:file { read getattr open execute execute_no_trans };
 
 #ping
