@@ -1,5 +1,5 @@
 # ==============================================
-# Policy File of /system/binnetdiag Executable File 
+# Policy File of /vendor/binnetdiag Executable File 
 
 
 # ==============================================
@@ -49,7 +49,7 @@ allow netdiag qtaguid_proc:file { read getattr open };
 allow netdiag self:capability net_admin;
 allow netdiag self:udp_socket create;
 allow netdiag system_file:file execute_no_trans;
-#/system/bin/aee
+#/vendor/bin/aee
 #allow netdiag aee_exec:file { read getattr open execute execute_no_trans };
 
 #ping

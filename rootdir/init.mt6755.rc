@@ -254,7 +254,7 @@ on post-fs-data
     chmod 0660 /dev/ttyMT2
     chown system system /dev/ttyMT2
 
-    exec /system/bin/mknod /dev/wmtWifi c 153 0
+    exec /vendor/bin/mknod /dev/wmtWifi c 153 0
     chmod 0660 /dev/wmtWifi
     chown system system /dev/wmtWifi
 
@@ -302,7 +302,7 @@ on post-fs-data
     chown root radio /sys/devices/platform/Accdet_Driver/driver/accdet_call_state
 
     # VideoCodec
-    exec /system/bin/mknod /dev/Vcodec c 160 0
+    exec /vendor/bin/mknod /dev/Vcodec c 160 0
     chmod 0660 /dev/Vcodec
     chown media system /dev/Vcodec
 
@@ -438,7 +438,7 @@ on post-fs-data
 
 
     # device info /proc interface
-    exec /system/bin/mknod /dev/devmap c 196 0;
+    exec /vendor/bin/mknod /dev/devmap c 196 0;
     chmod 0440 /dev/devmap
     chown root system /dev/devmap
 
@@ -685,7 +685,7 @@ on boot
     chmod 0660 /dev/ttyGS2
 
 # Char device for BT 3.0 HS
-    exec /system/bin/mknod /dev/ampc0 c 151 0
+    exec /vendor/bin/mknod /dev/ampc0 c 151 0
     chown bluetooth bluetooth /dev/ampc0
     chmod 0660 /dev/ampc0
 
@@ -695,29 +695,43 @@ on charger
     chmod 0666 /dev/kmsg
     start fuelgauged
 
-on property:ro.board.platform=mt6753
+on property:ro.board.platform=mt6755
     chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1300000
 
-service nvram_daemon /system/bin/nvram_daemon
+service nvram_daemon /vendor/bin/nvram_daemon
     class main
     user root
     group system
     oneshot
 
 # SPM firmware loader
-service spm_script /system/bin/spm_loader
+service spm_script /vendor/bin/spm_loader
     class core
     user root
     group root
     oneshot
 
-# Wireless subsystem services
-service p2p_supplicant /system/bin/wpa_supplicant \
+#
+# MTK Wi-Fi related services (Begin)
+#
+service wifi2agps /vendor/bin/wifi2agps
+    class main
+    user wifi
+    group gps inet
+
+# monitor property and power on/off wlan
+on property:wlan.driver.status=ok
+    write /dev/wmtWifi "1"
+
+on property:wlan.driver.status=unloaded
+    write /dev/wmtWifi "0"
+
+service p2p_supplicant /vendor/bin/wpa_supplicant \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf -N \
-    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin \
+    -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf -e/data/misc/wifi/entropy.bin -dd \
     -I/system/etc/wifi/p2p_supplicant_overlay.conf \
     -O/data/misc/wifi/sockets -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
@@ -729,8 +743,8 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     disabled
     oneshot
 
-service wpa_supplicant /system/bin/wpa_supplicant \
-    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin \
+service wpa_supplicant /vendor/bin/wpa_supplicant \
+    -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf -e/data/misc/wifi/entropy.bin -dd \
     -I/system/etc/wifi/wpa_supplicant_overlay.conf \
     -O/data/misc/wifi/sockets -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
@@ -743,7 +757,7 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     oneshot
 
 # Location
-service agpsd /system/bin/mtk_agpsd
+service agpsd /vendor/bin/mtk_agpsd
     class main
     socket agpsd stream 660 gps system
     socket agpsd2 stream 660 gps inet
@@ -751,17 +765,172 @@ service agpsd /system/bin/mtk_agpsd
     user gps
     group gps radio inet sdcard_r sdcard_rw misc
 
-service slpd /system/bin/slpd
+service slpd /vendor/bin/slpd
     class main
     user gps
     group gps inet
 
-service wifi2agps /system/bin/wifi2agps
+#
+# MTK Wi-Fi related services (End)
+#
+service dhcpcd_bt-pan /vendor/bin/dhcpcd -BK -dd
     class main
-    user wifi
-    group gps inet
+    user root
+    group net_admin net_raw
+    disabled
+    oneshot
 
-service mnld /system/bin/mnld
+service dhcpcd_wlan0 /vendor/bin/dhcpcd -ABKLG -dd
+    class main
+	user root
+	group net_admin net_raw
+    disabled
+    oneshot
+
+service dhcpcd_p2p /vendor/bin/dhcpcd -BK -dd
+    class main
+	user root
+	group net_admin net_raw
+    disabled
+    oneshot
+
+service iprenew_wlan0 /vendor/bin/dhcpcd -n
+    class main
+	user dhcp
+	group net_admin net_raw
+    disabled
+    oneshot
+
+service iprenew_p2p /vendor/bin/dhcpcd -n
+    class main
+	user dhcp
+	group net_admin net_raw
+    disabled
+    oneshot
+
+service dhcp_inform /vendor/bin/dhcpcd -s -BK -A
+    class main
+    user root
+    group system radio dhcp net_admin net_raw
+    disabled
+    oneshot
+
+service dhcpv6_inform /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cSIP.conf" -Dfi
+    class main
+    user root
+    group system radio dhcp net_admin net_raw
+    disabled
+    oneshot
+
+service dhcp6cDNS_wlan0 /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cDNS.conf" -Df wlan0
+	disabled
+	oneshot
+
+service dhcp6c_wlan0 /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6c.conf" -Df wlan0
+    disabled
+    oneshot
+
+on property:service.dhcp6c_wlan0.enable=0
+    stop dhcp6c_wlan0
+
+on property:service.dhcp6c_wlan0.enable=1
+    start dhcp6c_wlan0
+
+service dhcp6c_PD /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cPD.conf" -Df
+	disabled
+	oneshot
+
+service pppoe_wlan0 /vendor/bin/launchpppoe
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+on property:service.pppoe_wlan0.enable=0
+    stop pppoe_wlan0
+
+on property:service.pppoe_wlan0.enable=1
+    start pppoe_wlan0
+
+# write proc for test sim
+    on property:gsm.sim.ril.testsim=0
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
+    write /proc/sys/net/ipv4/tcp_rto_min 200
+    write /proc/sys/net/ipv4/tcp_early_retrans 3
+    on property:gsm.sim.ril.testsim=1
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
+    write /proc/sys/net/ipv4/tcp_rto_min 400
+    write /proc/sys/net/ipv4/tcp_early_retrans 0
+    on property:gsm.sim.ril.testsim.2=0
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
+    write /proc/sys/net/ipv4/tcp_rto_min 200
+    write /proc/sys/net/ipv4/tcp_early_retrans 3
+    on property:gsm.sim.ril.testsim.2=1
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
+    write /proc/sys/net/ipv4/tcp_rto_min 400
+    write /proc/sys/net/ipv4/tcp_early_retrans 0
+    on property:gsm.sim.ril.testsim.3=0
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
+    write /proc/sys/net/ipv4/tcp_rto_min 200
+    write /proc/sys/net/ipv4/tcp_early_retrans 3
+    on property:gsm.sim.ril.testsim.3=1
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
+    write /proc/sys/net/ipv4/tcp_rto_min 400
+    write /proc/sys/net/ipv4/tcp_early_retrans 0
+    on property:gsm.sim.ril.testsim.4=0
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
+    write /proc/sys/net/ipv4/tcp_rto_min 200
+    write /proc/sys/net/ipv4/tcp_early_retrans 3
+    on property:gsm.sim.ril.testsim.4=1
+    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
+    write /proc/sys/net/ipv4/tcp_rto_min 400
+    write /proc/sys/net/ipv4/tcp_early_retrans 0
+
+service vtservice /vendor/bin/vtservice
+    class main
+    socket soc_vt_tcv dgram 660 radio system
+    socket soc_vt_stk dgram 660 radio system
+    socket soc_vt_svc dgram 660 radio system
+    user root
+    group camera graphics media sdcard_rw radio sdcard_r media_rw
+    ioprio rt 4
+
+service cmmb /vendor/bin/cmmbsp
+    class main
+    user root
+    group system audio camera graphics inet net_bt net_bt_admin net_bw_acct media
+    ioprio rt 4
+
+service dbus /vendor/bin/dbus-daemon --system --nofork
+    class main
+    socket dbus stream 660 bluetooth bluetooth
+    user bluetooth
+    group bluetooth net_bt_admin
+
+service bluetoothd /vendor/bin/bluetoothd -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+    group bluetooth net_bt_admin misc
+    disabled
+
+service mtkbt /vendor/bin/mtkbt
+    class late_start
+	socket bt.int.adp dgram 660 bluetooth net_bt
+	socket bt.a2dp.stream dgram 660 bluetooth net_bt
+	user bluetooth
+	group system vpn net_admin inet net_raw net_bt bluetooth net_bt_admin net_bt_stack sdcard_r
+	oneshot
+
+service pppd_gprs /vendor/bin/pppd_dt /dev/ttyACM0 debug noauth refuse-eap usepeerdns nodetach
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
+service mnld /vendor/bin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
@@ -769,7 +938,7 @@ service mnld /system/bin/mnld
 
 # CEI comments start
 # [BugID:13]2015/07/28 Jiahan Li:NLED driver porting
-service led_service /system/bin/led_service
+service led_service /vendor/bin/led_service
     class main
     socket led_socket stream 660 system system
     user system
@@ -777,123 +946,123 @@ service led_service /system/bin/led_service
     #oneshot
 # CEI comments end
 
-service MPED /system/bin/MPED
+service MPED /vendor/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
     socket MPED stream 660 gps system
 
 # Sensors
-service msensord /system/bin/msensord
+service msensord /vendor/bin/msensord
     class main
     oneshot
 
-service s62xd /system/bin/s62xd
+service s62xd /vendor/bin/s62xd
     disabled
     user compass
     group system
     class main
 
-service st480 /system/bin/st480
+service st480 /vendor/bin/st480
     disabled
     user system
     group system
     class main
 
-service ami304d /system/bin/ami304d
+service ami304d /vendor/bin/ami304d
     user system
     group system
     disabled
     class main
 
-service bmibmmd /system/bin/bmibmmd
+service bmibmmd /vendor/bin/bmibmmd
     disabled
     user system
     group system
     class main
 
-service memsicd /system/bin/memsicd
+service memsicd /vendor/bin/memsicd
     disabled
     user system
     group system
     class main
 
-service memsicd3416x /system/bin/memsicd3416x
+service memsicd3416x /vendor/bin/memsicd3416x
     disabled
     user system
     group system
     class main
 
-service akmd8975 /system/bin/akmd8975
+service akmd8975 /vendor/bin/akmd8975
     disabled
     user system
     group system
     class main
 
-service akmd8963 /system/bin/akmd8963
+service akmd8963 /vendor/bin/akmd8963
     disabled
     user system
     group system
     class main
 
-service akmd09911 /system/bin/akmd09911
+service akmd09911 /vendor/bin/akmd09911
     disabled
     user system
     group system
     class main
 
-service bmm050d /system/bin/bmm050d
+service bmm050d /vendor/bin/bmm050d
     disabled
     user system
     group system
     class main
 
-service mc6420d /system/bin/mc6420d
+service mc6420d /vendor/bin/mc6420d
     disabled
     user system
     group system
     class main
 
-service orientationd /system/bin/orientationd
+service orientationd /vendor/bin/orientationd
     disabled
     user system
     group system input
     class main
 
-service AcdApiDaemon /system/bin/AcdApiDaemon
+service AcdApiDaemon /vendor/bin/AcdApiDaemon
     disabled
     user system
     group system
     class main
 
-service geomagneticd /system/bin/geomagneticd
+service geomagneticd /vendor/bin/geomagneticd
     disabled
     user system
     group system input
     class main
 
-service memsicp /system/bin/memsicp
+service memsicp /vendor/bin/memsicp
    	user system
     group system
     class main
 
-service memsicpf /system/bin/memsicpf
+service memsicpf /vendor/bin/memsicpf
    	user system
     group system
     class main
 
 # Thermal
-service thermal_manager /system/bin/thermal_manager
+service thermal_manager /vendor/bin/thermal_manager
     class main
     user root
     oneshot
 
-service fuelgauged /system/bin/fuelgauged
+service fuelgauged /vendor/bin/fuelgauged
     class main
     user system
     group system
 
-service wmtLoader /system/bin/wmt_loader
+service wmtLoader /vendor/bin/wmt_loader
     user root
     group root
     class core
@@ -904,7 +1073,7 @@ service wmtLoader /system/bin/wmt_loader
 on property:sys.boot_completed=1
     start ged_srv
 
-service ged_srv /system/bin/ged_srv
+service ged_srv /vendor/bin/ged_srv
     class core
     user system
     group system
@@ -913,19 +1082,19 @@ service ged_srv /system/bin/ged_srv
 on property:sys.boot_completed=1
     start gas_srv
 
-service gas_srv /system/bin/gas_srv
+service gas_srv /vendor/bin/gas_srv
     class core
     user system
     group system
     disabled
 
-service pq /system/bin/pq
+service pq /vendor/bin/pq
     class main
     user system
     group system graphics
 
 
-service guiext-server /system/bin/guiext-server
+service guiext-server /vendor/bin/guiext-server
     class main
     user system
     group system graphics
@@ -937,7 +1106,7 @@ service charger /sbin/healthd -c
     seclabel u:r:healthd:s0
 
 # Fingerprint
-service etsd /system/bin/etsd
+service etsd /vendor/bin/etsd
     class late_start
     user system
     group system
