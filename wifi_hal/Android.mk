@@ -27,23 +27,6 @@ ifeq ($(MTK_TC7_FEATURE), yes)
 LOCAL_CFLAGS += -DCONFIG_PNO_SUPPORT
 endif
 
-ifdef INCLUDE_NAN_FEATURE
-LOCAL_SRC_FILES += \
-    com_android_server_wifi_nan_WifiNanNative.cpp \
-    WifiNanClientState.java \
-    wifi_nan_hal_mock.cpp \
-    WifiNanHalMock.java \
-    WifiNanHalTest.java \
-    WifiNanManagerTest.java \
-    WifiNanNative.java \
-    WifiNanService.java \
-    WifiNanServiceImpl.java \
-    WifiNanSessionState.java \
-    WifiNanStateManager.java \
-    WifiNanStateManagerTest.java \
-    TlvBufferUtilsTest.java
-endif
-
 LOCAL_C_INCLUDES += \
 	external/libnl/include \
 	$(call include-path-for, libhardware_legacy)/hardware_legacy \
