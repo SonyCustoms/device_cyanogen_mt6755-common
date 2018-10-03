@@ -29,6 +29,7 @@ LOCAL_SRC_FILES := \
     mtk_omx.cpp \
     mtk_ui.cpp \
     mtk_wvm.cpp \
+    mtk_wifi.cpp \
     mtk_xlog.cpp
 
 # only for 64bit libraries
