@@ -1,14 +1,3 @@
-/*
- * Driver interaction with extended Linux CFG8021
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * Alternatively, this software may be distributed under the terms of BSD
- * license.
- *
- */
 #include "includes.h"
 #include <sys/types.h>
 #include <fcntl.h>
@@ -1907,4 +1896,5 @@ int wpa_driver_set_ap_wps_p2p_ie(void *priv, const struct wpabuf *beacon,
 	wpa_printf(MSG_DEBUG, "iface %s set_ap_wps_p2p_ie, ignored", bss->ifname);
 	return 0;
 }
+
 

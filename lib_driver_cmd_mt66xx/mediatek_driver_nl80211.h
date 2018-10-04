@@ -344,3 +344,4 @@ struct wpa_driver_available_chan_s {
 
 
 #endif
+
