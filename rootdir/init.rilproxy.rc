@@ -5,10 +5,9 @@
 #
 # Rilproxy used to control ril request/urc/response for gsm rild and c2k rild
 #
-service ril-proxy /vendor/bin/rilproxy -l mtk-rilproxy.so
+service ril-proxy /system/bin/rilproxy -l mtk-rilproxy.so
     class core
     socket rild stream 660 root radio
-    socket rild2 stream 660 root radio
     socket rild3 stream 660 root radio
     socket rild4 stream 660 root radio
     socket rilproxy-atci stream 660 root radio
@@ -23,10 +22,9 @@ service ril-proxy /vendor/bin/rilproxy -l mtk-rilproxy.so
     oneshot
     disabled
 
-service ril-daemon-mtk /vendor/bin/mtkrild
+service ril-daemon-mtk /system/bin/mtkrild
     class core
     socket mrild stream 660 root radio
-    socket mrild2 stream 660 root radio
     socket mrild3 stream 660 root radio
     socket mrild4 stream 660 root radio
     socket rild-ims stream 660 root radio

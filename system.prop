@@ -13,7 +13,7 @@ wifi.direct.interface=p2p0
 #
 wifi.tethering.interface=ap0
 #
-ro.telephony.ril_class=MT6755
+ro.telephony.ril_class=MediaTekRIL
 persist.mtk.wcn.combo.chipid=-1
 service.wcn.driver.ready=no
 ro.mtk_wlan_support=1

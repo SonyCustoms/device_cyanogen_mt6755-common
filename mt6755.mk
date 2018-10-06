@@ -30,8 +30,6 @@ PRODUCT_PACKAGES += \
     init.epdg.rc \
     init.wfca.rc \
     init.common_svc.rc \
-    meta_init.modem.rc \
-    meta_init.connectivity.rc \
     init.mt6755.usb.rc \
     ueventd.mt6755.rc
 
@@ -198,13 +196,6 @@ PRODUCT_PACKAGES += \
     muxreport \
     terservice
 
-# RIL
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.kernel.android.checkjni=0 \
-    ro.telephony.ril_class=MT6750 \
-    ro.telephony.ril.config=fakeiccid \
-    ro.com.android.mobiledata=false
-
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/telephony/spn-conf.xml:system/etc/spn-conf.xml
 
@@ -263,12 +254,6 @@ PRODUCT_PACKAGES += \
     fsck.ntfs \
     mkfs.ntfs \
     mount.ntfs
-
-# Telephony
-SIM_COUNT := 2
-PRODUCT_PROPERTY_OVERRIDES += ro.telephony.sim.count=$(SIM_COUNT)
-PRODUCT_PROPERTY_OVERRIDES += persist.radio.default.sim=0
-PRODUCT_PROPERTY_OVERRIDES += persist.radio.multisim.config=dsds
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/telephony/ecc_list.xml:system/etc/ecc_list.xml

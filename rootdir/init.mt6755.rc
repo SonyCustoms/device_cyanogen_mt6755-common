@@ -1,7 +1,6 @@
 # MTK platform .rc configure
 
 import init.mt6755.usb.rc
-import init.mt6755.modem.rc
 import init.target.rc
 import init.connectivity.rc
 import init.rilproxy.rc
@@ -710,7 +709,7 @@ on charger
     chmod 0666 /dev/kmsg
     start fuelgauged
 
-on property:ro.board.platform=mt6753
+on property:ro.board.platform=mt6755
     chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1300000
@@ -879,11 +878,6 @@ service fuelgauged /system/bin/fuelgauged
     user system
     group system
 
-service wmtLoader /system/bin/wmt_loader
-    user root
-    group root
-    class core
-    oneshot
 on property:wlan.driver.status=ok
 	write /dev/wmtWifi "1"
 on property:wlan.driver.status=unloaded

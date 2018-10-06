@@ -14,7 +14,6 @@ $(call add-rootdir-targets, \
     fstab.mt6755 \
     init.mt6755.rc \
     init.modem.rc \
-    meta_init.connectivity.rc \
     init.connectivity.rc \
     init.rilproxy.rc \
     init.volte.rc \
@@ -22,6 +21,5 @@ $(call add-rootdir-targets, \
     init.epdg.rc \
     init.wfca.rc \
     init.common_svc.rc \
-    meta_init.modem.rc \
     init.mt6755.usb.rc \
     ueventd.mt6755.rc)
