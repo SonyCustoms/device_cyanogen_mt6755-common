@@ -269,9 +269,9 @@ on post-fs-data
     chmod 0660 /dev/ttyMT2
     chown system system /dev/ttyMT2
 
-    exec /system/bin/mknod /dev/wmtWifi c 153 0
+    mknod /dev/wmtWifi c 153 0
     chmod 0660 /dev/wmtWifi
-    chown system wifi /dev/wmtWifi
+    chown system system /dev/wmtWifi
 
     #add for acc
     chmod 0660 /sys/bus/platform/drivers/gsensor/cpsdata
@@ -710,26 +710,26 @@ on charger
     chmod 0666 /dev/kmsg
     start fuelgauged
 
-on property:ro.board.platform=mt6755
+on property:ro.board.platform=mt6753
     chown system system /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1300000
 
-service nvram_daemon /system/vendor/bin/nvram_daemon
+service nvram_daemon /system/bin/nvram_daemon
     class main
     user root
     group system
     oneshot
 
 # SPM firmware loader
-service spm_script /system/vendor/bin/spm_loader
+service spm_script /system/bin/spm_loader
     class core
     user root
     group root
     oneshot
 
 # Location
-service agpsd /system/vendor/bin/mtk_agpsd
+service agpsd /system/bin/mtk_agpsd
     class main
     socket agpsd stream 660 gps system
     socket agpsd2 stream 660 gps inet
@@ -737,17 +737,17 @@ service agpsd /system/vendor/bin/mtk_agpsd
     user gps
     group gps radio inet sdcard_r sdcard_rw misc
 
-service slpd /system/vendor/bin/slpd
+service slpd /system/bin/slpd
     class main
     user gps
     group gps inet
 
-service wifi2agps /system/vendor/bin/wifi2agps
+service wifi2agps /system/bin/wifi2agps
     class main
     user wifi
     group gps inet
 
-service mnld /system/vendor/bin/mnld
+service mnld /system/bin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
@@ -763,123 +763,123 @@ service led_service /system/bin/led_service
     #oneshot
 # CEI comments end
 
-service MPED /system/vendor/bin/MPED
+service MPED /system/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
     socket MPED stream 660 gps system
 
 # Sensors
-service msensord /system/vendor/bin/msensord
+service msensord /system/bin/msensord
     class main
     oneshot
 
-service s62xd /system/vendor/bin/s62xd
+service s62xd /system/bin/s62xd
     disabled
     user compass
     group system
     class main
 
-service st480 /system/vendor/bin/st480
+service st480 /system/bin/st480
     disabled
     user system
     group system
     class main
 
-service ami304d /system/vendor/bin/ami304d
+service ami304d /system/bin/ami304d
     user system
     group system
     disabled
     class main
 
-service bmibmmd /system/vendor/bin/bmibmmd
+service bmibmmd /system/bin/bmibmmd
     disabled
     user system
     group system
     class main
 
-service memsicd /system/vendor/bin/memsicd
+service memsicd /system/bin/memsicd
     disabled
     user system
     group system
     class main
 
-service memsicd3416x /system/vendor/bin/memsicd3416x
+service memsicd3416x /system/bin/memsicd3416x
     disabled
     user system
     group system
     class main
 
-service akmd8975 /system/vendor/bin/akmd8975
+service akmd8975 /system/bin/akmd8975
     disabled
     user system
     group system
     class main
 
-service akmd8963 /system/vendor/bin/akmd8963
+service akmd8963 /system/bin/akmd8963
     disabled
     user system
     group system
     class main
 
-service akmd09911 /system/vendor/bin/akmd09911
+service akmd09911 /system/bin/akmd09911
     disabled
     user system
     group system
     class main
 
-service bmm050d /system/vendor/bin/bmm050d
+service bmm050d /system/bin/bmm050d
     disabled
     user system
     group system
     class main
 
-service mc6420d /system/vendor/bin/mc6420d
+service mc6420d /system/bin/mc6420d
     disabled
     user system
     group system
     class main
 
-service orientationd /system/vendor/bin/orientationd
+service orientationd /system/bin/orientationd
     disabled
     user system
     group system input
     class main
 
-service AcdApiDaemon /system/vendor/bin/AcdApiDaemon
+service AcdApiDaemon /system/bin/AcdApiDaemon
     disabled
     user system
     group system
     class main
 
-service geomagneticd /system/vendor/bin/geomagneticd
+service geomagneticd /system/bin/geomagneticd
     disabled
     user system
     group system input
     class main
 
-service memsicp /system/vendor/bin/memsicp
+service memsicp /system/bin/memsicp
    	user system
     group system
     class main
 
-service memsicpf /system/vendor/bin/memsicpf
+service memsicpf /system/bin/memsicpf
    	user system
     group system
     class main
 
 # Thermal
-service thermal_manager /system/vendor/bin/thermal_manager
+service thermal_manager /system/bin/thermal_manager
     class main
     user root
     oneshot
 
-service fuelgauged /system/vendor/bin/fuelgauged
+service fuelgauged /system/bin/fuelgauged
     class main
     user system
     group system
 
-service wmtLoader /system/vendor/bin/wmt_loader
+service wmtLoader /system/bin/wmt_loader
     user root
     group root
     class core
@@ -893,7 +893,7 @@ on property:wlan.driver.status=unloaded
 on property:sys.boot_completed=1
     start ged_srv
 
-service ged_srv /system/vendor/bin/ged_srv
+service ged_srv /system/bin/ged_srv
     class core
     user system
     group system
@@ -902,19 +902,19 @@ service ged_srv /system/vendor/bin/ged_srv
 on property:sys.boot_completed=1
     start gas_srv
 
-service gas_srv /system/vendor/bin/gas_srv
+service gas_srv /system/bin/gas_srv
     class core
     user system
     group system
     disabled
 
-service pq /system/vendor/bin/pq
+service pq /system/bin/pq
     class main
     user system
     group system graphics
 
 
-service guiext-server /system/vendor/bin/guiext-server
+service guiext-server /system/bin/guiext-server
     class main
     user system
     group system graphics
@@ -926,7 +926,7 @@ service charger /sbin/healthd -c
     seclabel u:r:healthd:s0
 
 # Fingerprint
-service etsd /system/vendor/bin/etsd
+service etsd /system/bin/etsd
     class late_start
     user system
     group system

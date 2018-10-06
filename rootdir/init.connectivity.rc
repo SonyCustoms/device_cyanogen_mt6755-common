@@ -44,13 +44,13 @@ on init
 #
 
 # WMT
-service wmt_loader /system/vendor/bin/wmt_loader
+service wmt_loader /vendor/bin/wmt_loader
     class core
     user root
     group root
     oneshot
 
-service wmt_launcher /system/vendor/bin/wmt_launcher -p /system/vendor/firmware/
+service wmt_launcher /vendor/bin/wmt_launcher -p /vendor/firmware/
     user system
     group system
     class core
@@ -58,7 +58,7 @@ service wmt_launcher /system/vendor/bin/wmt_launcher -p /system/vendor/firmware/
 on property:service.wcn.coredump.mode=2
 start stp_dump
 
-service stp_dump /system/vendor/bin/stp_dump3
+service stp_dump /vendor/bin/stp_dump3
     user root
     group root
     class core
@@ -66,25 +66,25 @@ service stp_dump /system/vendor/bin/stp_dump3
     oneshot
 
 # GPS
-service mnld /system/vendor/bin/mnld
+service mnld /vendor/bin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
     socket mnld stream 660 gps system
 
-service MPED /system/vendor/bin/MPED
+service MPED /vendor/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
     socket MPED stream 660 gps system
 
-#service BGW /system/vendor/bin/BGW
+#service BGW /vendor/bin/BGW
 #    user system
 #    group gps system radio
 #    class main
 
 # Wlan
-service wifi2agps /system/vendor/bin/wifi2agps
+service wifi2agps /vendor/bin/wifi2agps
     class main
     user wifi
     group gps inet
