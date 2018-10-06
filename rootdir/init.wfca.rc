@@ -8,7 +8,7 @@ on property:ril.wfca=1
 on property:ril.wfca=0
     stop wfca
 
-service wfca /vendor/bin/wfca
+service wfca /system/vendor/bin/wfca
     class core
     socket wfca stream 660 root system
     socket wfca_rds stream 660 root system

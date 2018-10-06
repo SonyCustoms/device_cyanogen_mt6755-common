@@ -24,29 +24,29 @@ on boot
 # Connectivity related services (Begin)
 #
 # WMT
-service wmt_loader /vendor/bin/wmt_loader
+service wmt_loader /system/vendor/bin/wmt_loader
     user root
     group root
     oneshot
 
-service wmt_launcher /vendor/bin/wmt_launcher -p /vendor/firmware/
+service wmt_launcher /system/vendor/bin/wmt_launcher -p /vendor/firmware/
     user system
     group system
 
 # GPS
-#service mnld /vendor/bin/mnld
+#service mnld /system/vendor/bin/mnld
 #    class main
 #    user gps
 #    group gps inet misc sdcard_rw sdcard_r media_rw system radio
 #    socket mnld stream 660 gps system
 
-service MPED /vendor/bin/MPED
+service MPED /system/vendor/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
     socket MPED stream 660 gps system
 
-#service BGW /vendor/bin/BGW
+#service BGW /system/vendor/bin/BGW
 #    user system
 #    group gps system radio
 #    class main
