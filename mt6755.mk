@@ -30,8 +30,6 @@ PRODUCT_PACKAGES += \
     init.epdg.rc \
     init.wfca.rc \
     init.common_svc.rc \
-    meta_init.modem.rc \
-    meta_init.connectivity.rc \
     init.mt6755.usb.rc \
     ueventd.mt6755.rc
 
