@@ -752,13 +752,23 @@ service wifi2agps /system/bin/wifi2agps
     user wifi
     group gps inet
 
-service mnld /system/xbin/mnld
+service mnld /system/vendor/bin/mnld
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system radio
     socket mnld stream 660 gps system
 
-service MPED /system/xbin/MPED
+# CEI comments start
+# [BugID:13]2015/07/28 Jiahan Li:NLED driver porting
+service led_service /system/bin/led_service
+    class main
+    socket led_socket stream 660 system system
+    user system
+    group system
+    #oneshot
+# CEI comments end
+
+service MPED /system/vendor/bin/MPED
     class main
     user gps
     group gps inet misc sdcard_rw sdcard_r media_rw system
@@ -880,7 +890,7 @@ service wmtLoader /system/bin/wmt_loader
     class core
     oneshot
 
-service conn_launcher /system/bin/6620_launcher -p /system/etc/firmware/
+service conn_launcher /system/bin/6620_launcher -p /system/vendor/firmware/
     user system
     group system
     class core
@@ -920,26 +930,6 @@ service charger /sbin/healthd -c
     class charger
     critical
     seclabel u:r:healthd:s0
-
-# Fingerprint
-service etsd /system/bin/etsd
-    class late_start
-    user system
-    group system
-
-service fingerprintd /system/bin/fingerprintd
-    class late_start
-    user system
-    group system
-
-service gx_fpd /system/bin/gx_fpd
-    class late_start
-    user root
-    group root system
-
-service fp /system/bin/fpserver
-    class main
-    user root
 
 on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
