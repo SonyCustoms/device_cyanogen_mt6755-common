@@ -17,6 +17,9 @@ on init
     mkdir /nvdata    0771 system system
     mkdir /custom    0771 system system
 
+# Fix permission for telephony
+    chmod 0644 /proc/cmdline
+
 # change lk_env permission
     chown root system /proc/lk_env
     chmod 0660 /proc/lk_env
