@@ -700,6 +700,19 @@ service nvram_daemon /vendor/bin/nvram_daemon
     group system
     oneshot
 
+#CEI comments start
+#Add NVRAM
+service nvram_tuba /system/bin/nvram_tuba
+    class main
+    user root
+    oneshot
+#CEI comments end
+
+service NvRAMAgent /vendor/bin/nvram_agent_binder
+    class main
+    user system
+    group system
+
 # SPM firmware loader
 service spm_script /vendor/bin/spm_loader
     class core

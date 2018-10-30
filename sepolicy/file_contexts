@@ -460,6 +460,7 @@
 /vendor/bin/netdiag u:object_r:netdiag_exec:s0
 /vendor/bin/nvram_agent_binder u:object_r:nvram_agent_binder_exec:s0
 /vendor/bin/nvram_daemon u:object_r:nvram_daemon_exec:s0
+/system/bin/nvram_tuba u:object_r:nvram_tuba_exec:s0
 /vendor/bin/orientationd u:object_r:orientationd_exec:s0
 /vendor/bin/permission_check u:object_r:permission_check_exec:s0
 /vendor/bin/poad u:object_r:poad_exec:s0
