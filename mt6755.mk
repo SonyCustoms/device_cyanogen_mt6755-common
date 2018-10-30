@@ -29,17 +29,12 @@ PRODUCT_PACKAGES += \
     init.mt6755.rc \
     init.mt6755.usb.rc \
     init.project.rc \
-    init.recovery.mt6755.rc \
     init.rilproxy.rc \
     init.usb.configfs.rc \
     init.usb.rc \
     init.volte.rc \
     init.wfca.rc \
     ueventd.mt6755.rc
-
-# Recovery Ramdisk
-PRODUCT_PACKAGES += \
-    init.recovery.mt6755.rc
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
