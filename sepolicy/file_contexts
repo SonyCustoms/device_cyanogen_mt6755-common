@@ -387,6 +387,8 @@
 #
 /system/app/mcRegistry(/.*)? u:object_r:mobicore_data_file:s0
 /system/bin/6620_launcher u:object_r:mtk_6620_launcher_exec:s0
+/dev/socket/led_socket(/.*)?	u:object_r:led_service_socket:s0
+/system/bin/led_service	u:object_r:led_service_exec:s0
 /system/bin/stp_dump3 u:object_r:stp_dump3_exec:s0
 /system/bin/aal u:object_r:aal_exec:s0
 /system/bin/aee_core_forwarder u:object_r:aee_core_forwarder_exec:s0
