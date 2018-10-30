@@ -13,13 +13,6 @@ endef
 $(call add-rootdir-targets, \
     fstab.mt6755 \
     init.mt6755.rc \
-    init.modem.rc \
-    init.connectivity.rc \
-    init.rilproxy.rc \
-    init.volte.rc \
-    init.mal.rc \
-    init.epdg.rc \
-    init.wfca.rc \
-    init.common_svc.rc \
+    init.mt6755.modem.rc \
     init.mt6755.usb.rc \
     ueventd.mt6755.rc)
