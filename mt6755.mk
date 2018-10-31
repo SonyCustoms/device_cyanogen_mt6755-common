@@ -97,15 +97,22 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/bin/mtkrild:vendor/bin/mtkrild \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib/libmal.so:vendor/lib/libmal.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib64/libmal.so:vendor/lib64/libmal.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib/libmdfx.so:vendor/lib/libmdfx.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib64/libmdfx.so:vendor/lib64/libmdfx.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib/librilmtk.so:vendor/lib/librilmtk.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib64/librilmtk.so:vendor/lib64/librilmtk.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib/mtk-ril.so:vendor/lib/mtk-ril.so \
-    $(LOCAL_PATH)/prebuilts/proprietary/wileyfox/porridge/lib64/mtk-ril.so:vendor/lib64/mtk-ril.so
+    $(LOCAL_PATH)/ril/bin/mtkrild:vendor/bin/mtkrild \
+    $(LOCAL_PATH)/ril/bin/mtkrild:vendor/bin/mtkrildmd2 \
+    $(LOCAL_PATH)/ril/lib/libmal.so:vendor/lib/libmal.so \
+    $(LOCAL_PATH)/ril/lib/libmdfx.so:vendor/lib/libmdfx.so \
+    $(LOCAL_PATH)/ril/lib/librilmtk.so:vendor/lib/librilmtk.so \
+    $(LOCAL_PATH)/ril/lib/librilmtk.so:vendor/lib/librilmtkmd2.so \
+    $(LOCAL_PATH)/ril/lib/mtk-ril.so:vendor/lib/mtk-ril.so \
+    $(LOCAL_PATH)/ril/lib/mtk-ril.so:vendor/lib/mtk-rilmd2.so \
+    $(LOCAL_PATH)/ril/lib/mtk-ril.so:vendor/lib/mtk-rilproxy.so \
+    $(LOCAL_PATH)/ril/lib64/libmal.so:vendor/lib64/libmal.so \
+    $(LOCAL_PATH)/ril/lib64/libmdfx.so:vendor/lib64/libmdfx.so \
+    $(LOCAL_PATH)/ril/lib64/librilmtk.so:vendor/lib64/librilmtk.so \
+    $(LOCAL_PATH)/ril/lib64/librilmtk.so:vendor/lib64/librilmtkmd2.so \
+    $(LOCAL_PATH)/ril/lib64/mtk-ril.so:vendor/lib64/mtk-rilmd2.so \
+    $(LOCAL_PATH)/ril/lib64/mtk-ril.so:vendor/lib64/mtk-rilproxy.so \
+    $(LOCAL_PATH)/ril/lib64/mtk-ril.so:vendor/lib64/mtk-ril.so
 
 # Wifi
 PRODUCT_PACKAGES += \
