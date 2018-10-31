@@ -61,10 +61,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     libion
 
-#camera
-PRODUCT_PACKAGES += \
-    libcam.halsensor
-
 # FM
 PRODUCT_PACKAGES += \
     libfmjni \
