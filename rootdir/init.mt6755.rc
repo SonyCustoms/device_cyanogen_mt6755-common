@@ -5,7 +5,6 @@ import init.volte.rc
 import init.mal.rc
 import init.epdg.rc
 import init.wfca.rc
-import init.common_svc.rc
 import init.target.rc
 
 # init.modem.rc must be the LAST rc file because vold.post_fs_data_done is set in it

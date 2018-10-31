@@ -12,8 +12,6 @@ endef
 
 $(call add-rootdir-targets, \
     fstab.mt6755 \
-    init.aee.rc \
-    init.common_svc.rc \
     init.connectivity.rc \
     init.epdg.rc \
     init.mt6755.modem.rc \
