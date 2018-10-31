@@ -1,6 +1,5 @@
 import init.connectivity.rc
 import init.project.rc
-import init.aee.rc
 import init.rilproxy.rc
 import init.volte.rc
 import init.mal.rc
@@ -10,7 +9,7 @@ import init.common_svc.rc
 import init.target.rc
 
 # init.modem.rc must be the LAST rc file because vold.post_fs_data_done is set in it
-import init.modem.rc
+import init.mt6755.modem.rc
 # *** DO NOT import the new rc file after this line ***
 
 on early-init
@@ -34,7 +33,6 @@ on init
 # change lk_env permission
     chown root system /proc/lk_env
     chmod 0660 /proc/lk_env
-    chmod 0666 /dev/kmsg
 
     # increase sysctl_rmem_max and sysctl_wmem_max to 2M
     write /proc/sys/net/core/wmem_max 2097152
@@ -81,19 +79,17 @@ on post-fs-data
     # Set SELinux security contexts on upgrade or policy update.
     restorecon_recursive /nvdata
 
-    chmod 0660 /data/misc/wifi/p2p_supplicant.conf
-
-    #give system access to rfkill device node
+    # rfkill
     chmod 0660 /dev/rfkill
 
     # Radio
     mkdir /dev/radio 0770 radio radio
     mkdir /data/drm/wv 0770 drm system
-    symlink /oem/android-config/agps_profiles_conf2.xml /data/customization/agps_profiles_conf2.xml
-# GPS
+
+    # GPS
     mkdir /data/gps_mnl 0771 gps system
-    mkdir /data/misc/gps 0770 gps system
     mkdir /data/mpe_mnl 0771 gps system
+    mkdir /data/misc/gps 0770 gps system
     chown gps gps /sys/class/gpsdrv/gps/pwrctl
     chown gps gps /sys/class/gpsdrv/gps/suspend
     chown gps gps /sys/class/gpsdrv/gps/state
@@ -101,15 +97,8 @@ on post-fs-data
     chown gps gps /sys/class/gpsdrv/gps/status
 
     # NFC
-    #mkdir /data/nfc_socket 0771 nfc radio
+    mkdir /data/nfc_socket 0771 nfc radio
 
-# CEI comments start
-# Prevent swelling
-    chmod 0755 /sys/class/power_supply/battery/enable_llk
-# CEI comments end
-
-# -----------------------
-# Add by MTK
     # md32 boot
     chown root system /dev/md32
     chmod 0440 /dev/md32
@@ -117,19 +106,7 @@ on post-fs-data
     chmod 0660 /sys/class/misc/md32/md32_mobile_log
     write /sys/class/misc/md32/md32_boot 1
 
-    # dhcp server
-    mkdir /data/misc/dhcp 0770 dhcp wifi
-    chown dhcp wifi /data/misc/dhcp
-
-    # dhcpv6 server
-    mkdir /data/misc/wide-dhcpv6 0770 dhcp wifi
-    chown dhcp wifi /data/misc/wide-dhcpv6
-
-    # radvd
-    mkdir /data/misc/radvd 0770 system system
-    chmod 444 /etc/radvd/radvd.conf
-
-    # Mali 3D GPU driver
+    # Graphics
     chmod 666 /dev/mali0
 
     # Touch Panel
@@ -195,11 +172,6 @@ on post-fs-data
     chown system /sys/devices/platform/msensor/driver/cpsreptz
     chown system /sys/devices/platform/gsensor/driver/cpsopmode
     chown system /sys/devices/platform/gsensor/driver/cpsrange
-
-    chmod 0440 /sys/devices/soc/soc:gsensor@0/driver/pmrelax
-    chmod 0660 /sys/devices/soc/soc:gsensor@0/driver/tilt
-    chown system input /sys/devices/soc/soc:gsensor@0/driver/pmrelax
-    chown system input /sys/devices/soc/soc:gsensor@0/driver/tilt
 
     chown system system /dev/hwmsensor
     chown system system /dev/msensor
@@ -460,19 +432,11 @@ on post-fs-data
     #EM eint
     chown root diag /sys/bus/platform/drivers/eint/current_eint
 
-    # for ppp options file
-    mkdir /data/misc/ppp 0770 bluetooth net_bt
-
-    # for libipsec_ims
-    mkdir /data/misc/setkey 0770 root system
-    restorecon /data/misc/setkey
-
     # Android SEC related device nodes
     chmod 0660 /dev/sec
     chown root system /dev/sec
 
     # FM Radio device node
-    mknod /dev/fm     c 193 0;
     chmod 0660 /dev/fm
     chown media media /dev/fm
 
@@ -498,9 +462,6 @@ on post-fs-data
     # HDMI
     chown media system /dev/hdmitx
     chmod 0664 /dev/hdmitx
-
-    # JPEG
-    #chmod 0444 /dev/mtk_jpeg
 
     # almk
     chmod 0440 /dev/mtk_almk
@@ -553,10 +514,6 @@ on post-fs-data
     chown system camera /dev/LC898212AF
     chown system camera /dev/BU64745GWZAF
 
-    # otg_test
-    chown root radio /dev/mt_otg_test
-    chmod 0660 /dev/mt_otg_test
-
     # MDP
     chmod 0660 /dev/mt-mdp
     chown system media /dev/mt-mdp
@@ -590,9 +547,6 @@ on post-fs-data
     chmod 0660 /mtd@misc
     chown root system /mtd@misc
 
-    chmod 0664 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
-    chown media media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
-
     #mtk_sched
     chmod 0660 /dev/mtk_sched
     chown system media /dev/mtk_sched
@@ -606,12 +560,6 @@ on post-fs-data
     #otp
     chmod 0660 /proc/driver/otp
     chown root system /proc/driver/otp
-
-    #sn
-    chmod 0664 /sys/class/android_usb/android0/iSerial
-    chown root system /sys/class/android_usb/android0/iSerial
-    chmod 0664 /sys/devices/platform/mt_usb/cmode
-    chown root system /sys/devices/platform/mt_usb/cmode
 
     # secure memory
     chown system system /proc/secmem0
@@ -659,13 +607,6 @@ on boot
     chmod 0770 /sys/power/tuxonice
     chmod 0220 /sys/power/tuxonice/do_hibernate
 
-
-
-# permissions for NFC
-		setprop ro.nfc.port "I2C"
-		chmod 0600 /dev/pn54x
-		chown nfc nfc /dev/pn54x
-
 # Smartbook Handler Framework
     chown system system /sys/power/sb_state
     chmod 0660 /sys/power/sb_state
@@ -693,10 +634,6 @@ on boot
     chmod 0660 /proc/ppm/policy/userlimit_min_cpu_core
     chown system system /proc/ppm/policy/userlimit_max_cpu_core
     chmod 0660 /proc/ppm/policy/userlimit_max_cpu_core
-    chown system system /proc/ppm/policy/userlimit_cpu_core
-    chmod 0660 /proc/ppm/policy/userlimit_cpu_core
-    chown system system /proc/ppm/policy/userlimit_cpu_freq
-    chmod 0660 /proc/ppm/policy/userlimit_cpu_freq
     chown system system /proc/ppm/dump_cluster_0_dvfs_table
     chmod 0440 /proc/ppm/dump_cluster_0_dvfs_table
     chown system system /proc/ppm/dump_cluster_1_dvfs_table
@@ -767,139 +704,6 @@ on property:ro.board.platform=mt6753
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1300000
 
-on property:vold.decrypt=trigger_reset_main
-    write /proc/bootprof "INIT:vold.decrypt=trigger_reset_main"
-    start stop_modem
-    setprop sys.boot_completed 0
-    setprop dev.bootcomplete 0
-
-on property:vold.decrypt=trigger_post_fs_data
-    write /proc/bootprof "INIT:vold.decrypt=trigger_post_fs_data"
-
-on property:vold.decrypt=trigger_restart_min_framework
-    write /proc/bootprof "INIT:vold.decrypt=trigger_restart_min_framework"
-    setprop service.nvram_init 0
-    start nvram_daemon
-    start sysenv_daemon
-    start start_modem
-    start msensord
-    start permission_check
-    start stp_dump
-
-on property:vold.decrypt=trigger_restart_framework
-    write /proc/bootprof "INIT:vold.decrypt=trigger_restart_framework"
-    setprop service.nvram_init 0
-    start nvram_daemon
-    start sysenv_daemon
-    start start_modem
-    start msensord
-    start permission_check
-
-on property:vold.decrypt=trigger_shutdown_framework
-    write /proc/bootprof "INIT:vold.decrypt=trigger_shutdown_framework"
-    start stop_modem
-    start swapoff_action
-    stop stp_dump
-    setprop sys.boot_completed 0
-    setprop dev.bootcomplete 0
-
-service stop_modem /vendor/bin/md_ctrl 0
-    class main
-    disabled
-    oneshot
-
-service start_modem /vendor/bin/md_ctrl 1
-    class main
-    disabled
-    oneshot
-# Define TCP buffer sizes for various networks
-#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
-    setprop net.tcp.buffersize.default 4096,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.umts    4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hspa    4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hsupa   4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hsdpa   4094,87380,524288,4096,16384,524288
-    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
-    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
-    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-
-    setprop persist.sys.strictmode.disable 1
-
-## mtk printk uart controller
-on property:persist.uartconsole.enable=1
-    write /proc/mtprintk 1
-
-# Update the second boot logo
-service bootlogoupdater /vendor/bin/boot_logo_updater
-    class core
-    oneshot
-
-service mobile_log_d /vendor/bin/mobile_log_d
-    class main
-
-service mmedialogstart /vendor/bin/mobile_log_d --ftrace mmedia
-    oneshot
-    disabled
-
-service bsplogstart /vendor/bin/mobile_log_d --ftrace bsp
-    oneshot
-    disabled
-
-service trace_buf_off /vendor/bin/mobile_log_d --ftrace off
-    oneshot
-    disabled
-
-# ftrace log buffer control
-on property:ftrace.buffer.log=mmedia
-    start mmedialogstart
-
-on property:ftrace.buffer.log=bsp
-    start bsplogstart
-
-on property:ftrace.buffer.log=off
-    start trace_buf_off
-
-# MTK PR_DEBUG SWITCH
-on property:debug.MB.prdebug=1
-    write /sys/kernel/debug/dynamic_debug/control "file *mediatek* +p"
-    write /sys/kernel/debug/dynamic_debug/control "file *gpu* -p"
-on property:debug.MB.prdebug=0
-    write /sys/kernel/debug/dynamic_debug/control "file *mediatek* -p"
-
-service met_log_d /vendor/bin/met_log_d
-    class main
-
-# bugreport is triggered by holding down volume down, volume up and power
-service bugreport /system/bin/dumpstate -d -p -B \
-        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
-    class main
-    disabled
-    oneshot
-    keycodes 114 115 116
-
-# start ged_srv
-on property:sys.boot_completed=1
-    start ged_srv
-
-on property:sys.boot_completed=1
-    # restore perf. parameters
-    write /proc/ppm/policy/userlimit_min_cpu_freq "1 -1"
-    write /proc/ppm/policy/userlimit_min_cpu_core "1 -1"
-    write /sys/class/block/mmcblk1/bdi/max_ratio 1
-
-service ged_srv /vendor/bin/ged_srv
-    class core
-    user system
-    group system readproc
-    disabled
-
-service netdiag /vendor/bin/netdiag
-    class main
-    socket netdiag stream 0664 root inet
-
-
 service nvram_daemon /vendor/bin/nvram_daemon
     class main
     user root
@@ -914,50 +718,10 @@ service nvram_tuba /system/bin/nvram_tuba
     oneshot
 #CEI comments end
 
-
-service pl_calibration /system/bin/pl_calibration
-    class main
-    user root
-    group system
-    oneshot
-
-service sysenv_daemon /vendor/bin/sysenv_daemon
+service NvRAMAgent /vendor/bin/nvram_agent_binder
     class main
     user system
     group system
-    oneshot
-
-service atci_service /vendor/bin/atci_service
-    class core
-    socket atci-service stream 660 radio system
-    socket atci-serv-fw stream 660 radio system
-    user root
-    disabled
-    group radio system
-
-service atcid-daemon-u /vendor/bin/atcid
-    class main
-    socket adb_atci_socket stream 660 radio system
-    user system
-    group radio system media
-    disabled
-    oneshot
-
-service atcid-daemon-e /vendor/bin/atcid
-    class core
-    socket adb_atci_socket stream 660 radio system
-    user root
-    group radio system
-    disabled
-    oneshot
-
-on property:ro.build.type=eng
-start atci_service
-start atcid-daemon-e
-
-on property:persist.service.atci.autostart=1
-start atci_service
-start atcid-daemon-u
 
 # SPM firmware loader
 service spm_script /vendor/bin/spm_loader
@@ -995,157 +759,6 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     disabled
     oneshot
 
-service dhcpcd_bt-pan /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpcd_wlan0 /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpcd_p2p /system/bin/dhcpcd -BK -dd
-    class main
-    user root
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service iprenew_wlan0 /system/bin/dhcpcd -n
-    class main
-    user dhcp
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service iprenew_p2p /system/bin/dhcpcd -n
-    class main
-    user dhcp
-    group net_admin net_raw
-    disabled
-    oneshot
-
-service dhcp_inform /system/bin/dhcpcd -s -BK -A
-    class main
-    user root
-    group system radio dhcp net_admin net_raw
-    disabled
-    oneshot
-
-service dhcpv6_inform /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cSIP.conf" -Dfi
-    class main
-    user root
-    group system radio dhcp net_admin net_raw
-    disabled
-    oneshot
-
-service dhcp6cDNS_wlan0 /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cDNS.conf" -Df wlan0
-    disabled
-    oneshot
-
-service dhcp6c_wlan0 /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6c.conf" -Df wlan0
-    disabled
-    oneshot
-
-on property:service.dhcp6c_wlan0.enable=0
-    stop dhcp6c_wlan0
-
-on property:service.dhcp6c_wlan0.enable=1
-    start dhcp6c_wlan0
-
-service dhcp6c_PD /vendor/bin/dhcp6c -c "/etc/wide-dhcpv6/dhcp6cPD.conf" -Df
-    disabled
-    oneshot
-
-service pppoe_wlan0 /vendor/bin/launchpppoe
-    user root
-    group radio cache inet misc
-    disabled
-    oneshot
-
-on property:service.pppoe_wlan0.enable=0
-    stop pppoe_wlan0
-
-on property:service.pppoe_wlan0.enable=1
-    start pppoe_wlan0
-# write proc for test sim
-    on property:gsm.sim.ril.testsim=0
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
-    write /proc/sys/net/ipv4/tcp_rto_min 200
-    write /proc/sys/net/ipv4/tcp_early_retrans 3
-    on property:gsm.sim.ril.testsim=1
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
-    write /proc/sys/net/ipv4/tcp_rto_min 400
-    write /proc/sys/net/ipv4/tcp_early_retrans 0
-    on property:gsm.sim.ril.testsim.2=0
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
-    write /proc/sys/net/ipv4/tcp_rto_min 200
-    write /proc/sys/net/ipv4/tcp_early_retrans 3
-    on property:gsm.sim.ril.testsim.2=1
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
-    write /proc/sys/net/ipv4/tcp_rto_min 400
-    write /proc/sys/net/ipv4/tcp_early_retrans 0
-    on property:gsm.sim.ril.testsim.3=0
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
-    write /proc/sys/net/ipv4/tcp_rto_min 200
-    write /proc/sys/net/ipv4/tcp_early_retrans 3
-    on property:gsm.sim.ril.testsim.3=1
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
-    write /proc/sys/net/ipv4/tcp_rto_min 400
-    write /proc/sys/net/ipv4/tcp_early_retrans 0
-    on property:gsm.sim.ril.testsim.4=0
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 0
-    write /proc/sys/net/ipv4/tcp_rto_min 200
-    write /proc/sys/net/ipv4/tcp_early_retrans 3
-    on property:gsm.sim.ril.testsim.4=1
-    write /proc/sys/net/netfilter/nf_conntrack_tcp_no_window_check 1
-    write /proc/sys/net/ipv4/tcp_rto_min 400
-    write /proc/sys/net/ipv4/tcp_early_retrans 0
-
-service DMAgent /vendor/bin/dm_agent_binder
-    class main
-    user root
-    group root cache
-
-service PPLAgent /vendor/bin/ppl_agent
-    class main
-    user root
-    group system cache
-
-service vtservice /vendor/bin/vtservice
-    class main
-    socket soc_vt_tcv dgram 660 radio system
-    socket soc_vt_stk dgram 660 radio system
-    socket soc_vt_svc dgram 660 radio system
-    socket volte_vt stream 660 root system
-    user media
-    group system camera graphics inet net_admin net_raw media sdcard_rw radio sdcard_r media_rw
-    ioprio rt 4
-
-service bluetoothd /system/bin/bluetoothd -n
-    class main
-    socket bluetooth stream 660 bluetooth bluetooth
-    socket dbus_bluetooth stream 660 bluetooth bluetooth
-    # init.rc does not yet support applying capabilities, so run as root and
-    # let bluetoothd drop uid to bluetooth with the right linux capabilities
-    group bluetooth net_bt_admin misc
-    disabled
-
-#
-#  Modem related services (Begin)
-#
-service pppd_gprs /system/bin/pppd_dt /dev/ttyACM0 debug noauth refuse-eap usepeerdns nodetach
-    user root
-    group radio cache inet misc
-    disabled
-    oneshot
-
-
 # Location
 service agpsd /vendor/bin/mtk_agpsd
     class main
@@ -1153,17 +766,12 @@ service agpsd /vendor/bin/mtk_agpsd
     socket agpsd2 stream 660 gps inet
     socket agpsd3 stream 660 gps inet
     user gps
-    group gps radio inet sdcard_r sdcard_rw misc system
+    group gps radio inet sdcard_r sdcard_rw misc
 
 service slpd /vendor/bin/slpd
     class main
     user gps
     group gps inet
-
-service ipod /vendor/bin/ipod
-    user root
-    group root
-    disabled
 
 service wifi2agps /vendor/bin/wifi2agps
     class main
@@ -1251,19 +859,9 @@ service bmm050d /vendor/bin/bmm050d
     group system
     class main
 
-service bmm056d /vendor/bin/bmm056d
-    disabled
-    user system
-    group system
-    class main
 service mc6420d /vendor/bin/mc6420d
     disabled
     user system
-    group system
-    class main
-service qmc5983d /vendor/bin/qmc5983d
-     disabled
-	 user system
     group system
     class main
 
@@ -1273,27 +871,10 @@ service orientationd /vendor/bin/orientationd
     group system input
     class main
 
-service AcdApiDaemon /vendor/bin/AcdApiDaemon
-    disabled
-    user system
-    group system
-    class main
-
 service geomagneticd /vendor/bin/geomagneticd
     disabled
     user system
     group system input
-    class main
-
-service mpud6050 /vendor/bin/mpud6050
-    oneshot
-    user system
-    group system
-
-service mc64xxd /vendor/bin/mc64xxd
-    disabled
-    user system
-    group system
     class main
 
 service memsicp /vendor/bin/memsicp
@@ -1306,57 +887,22 @@ service memsicpf /vendor/bin/memsicpf
     group system
     class main
 
-service NvRAMAgent /vendor/bin/nvram_agent_binder
-    class main
-    user system
-    group system
-
 # Thermal
-service thermal /vendor/bin/thermal
+service thermal_manager /vendor/bin/thermal_manager
     class main
-    user system
-    group system
-
-service thermald /vendor/bin/thermald
-    class main
-    user system
-    group system
+    user root
+    oneshot
 
 service fuelgauged /vendor/bin/fuelgauged
     class main
     user system
     group system
 
-service sn /vendor/bin/sn
-    class late_start
-    user system
-    group system sdcard_rw
-    oneshot
-
-#add for power-off alarm
-service poad /vendor/bin/poad
-    class main
-    user system
-    group system
-    oneshot
-
-#monitor battery status
-service batterywarning /vendor/bin/batterywarning
-    class main
-    user shell
-    group shell
-
-
 service wmtLoader /vendor/bin/wmt_loader
     user root
     group root
     class core
     oneshot
-
-service conn_launcher /system/bin/6620_launcher -p /system/vendor/firmware/
-    user system
-    group system
-    class core
 
 # Graphics
 # start ged_srv
@@ -1377,24 +923,6 @@ service pq /vendor/bin/pq
     user system
     group system graphics
 
-service kpoc_charger /vendor/bin/kpoc_charger
-    class charger
-
-service yamaha537 /vendor/bin/yamaha537 
-    disabled
-    user system
-    group system input
-    class main
-
-# jonny E-Compass 2nd source
-# gmc303/gme60x Daemon(gmadfs) init
-service gmadfs /vendor/bin/gmadfs -m -2
-	disabled
-	class main
-	user system
-	group system
-
-
 # Charger mode
 service charger /sbin/healthd -c
     class charger
@@ -1404,3 +932,4 @@ service charger /sbin/healthd -c
 on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
     setprop sys.io.scheduler bfq
+

@@ -20,11 +20,9 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 # Root
 PRODUCT_PACKAGES += \
     fstab.mt6755 \
-    init.aee.rc \
     init.common_svc.rc \
     init.connectivity.rc \
     init.epdg.rc \
-    init.modem.rc \
     init.mt6755.modem.rc \
     init.mt6755.rc \
     init.mt6755.usb.rc \
