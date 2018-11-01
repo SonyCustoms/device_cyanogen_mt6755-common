@@ -26,6 +26,7 @@ PRODUCT_PACKAGES += \
     init.mt6755.rc \
     init.mt6755.usb.rc \
     init.project.rc \
+    init.rilproxy.rc \
     init.usb.configfs.rc \
     init.usb.rc \
     init.volte.rc \

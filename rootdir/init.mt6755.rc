@@ -1,5 +1,6 @@
 import init.connectivity.rc
 import init.project.rc
+import init.rilproxy.rc
 import init.volte.rc
 import init.mal.rc
 import init.epdg.rc
