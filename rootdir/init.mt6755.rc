@@ -897,12 +897,6 @@ service fuelgauged /vendor/bin/fuelgauged
     user system
     group system
 
-service wmtLoader /vendor/bin/wmt_loader
-    user root
-    group root
-    class core
-    oneshot
-
 # Graphics
 # start ged_srv
 on property:sys.boot_completed=1
