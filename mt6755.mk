@@ -74,6 +74,11 @@ PRODUCT_PACKAGES += \
     libepos \
     gps.mt6755
 
+#mtk
+PRODUCT_PACKAGES += \
+    EngineerMode \
+    YGPS
+
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/agps_profiles_conf2.xml:system/etc/agps_profiles_conf2.xml \
     $(LOCAL_PATH)/configs/slp_conf:system/etc/slp_conf
