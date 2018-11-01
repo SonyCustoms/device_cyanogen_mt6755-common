@@ -22,6 +22,7 @@ on init
     # Platform-specific mount points
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
+    mkdir /nvcfg 0771 system system
     mkdir /persist   0771 system system
     mkdir /nvdata    0771 system system
     mkdir /custom    0771 system system
@@ -49,8 +50,21 @@ on post-fs
     #change permissions for mediaserver
     chown root media /proc/clkmgr/mipi_test
 
+    #change permission for engineer mode
+    chown radio system /proc/clkmgr/pll_test
+    chown radio system /proc/clkmgr/pll_fsel
+    chmod 0664 /proc/clkmgr/pll_test
+    chmod 0664 /proc/clkmgr/pll_fsel
+    #change permission for engineer mode
+    chown radio system /proc/freqhopping/dramc
+    chown radio system /proc/freqhopping/dumpregs
+    chown radio system /proc/freqhopping/freqhopping_debug
+    chown radio system /proc/freqhopping/status
+    chown radio system /proc/freqhopping/userdef
+
 # change owner
     chown system system /proc/bootprof
+    chmod 0664 /proc/bootprof
     chown root system /proc/mtprof/cputime
     chown root system /proc/mtprof/reboot_pid
 
@@ -66,6 +80,9 @@ on post-fs
     mkdir /nvdata/md     0771 system radio
     mkdir /nvdata/md_cmn 0771 system radio
     mkdir /nvdata/media  0771 media audio
+    chown system system /nvcfg
+    chmod 0771 /nvcfg
+    restorecon_recursive /nvcfg
     restorecon_recursive /nvdata/
 
 on post-fs-data
@@ -94,9 +111,16 @@ on post-fs-data
     chown gps gps /sys/class/gpsdrv/gps/state
     chown gps gps /sys/class/gpsdrv/gps/pwrsave
     chown gps gps /sys/class/gpsdrv/gps/status
+    mkdir /data/mpe_mnl 0771 gps system
+    chown gps system /data/mpe_mnl
+    chmod 0775 /vendor/xbin/MPED
 
     # NFC
-    mkdir /data/nfc_socket 0771 nfc radio
+    #mkdir /data/nfc_socket 0771 nfc radio
+
+    #B: [VY36] JackBB 2016/1/6 ETSI102695-1 5.5.4.3 Test case 2
+    mkdir /data/nfc 0760 nfc system
+    #E: [VY36] JackBB 2016/1/6
 
     # md32 boot
     chown root system /dev/md32
@@ -171,6 +195,10 @@ on post-fs-data
     chown system /sys/devices/platform/msensor/driver/cpsreptz
     chown system /sys/devices/platform/gsensor/driver/cpsopmode
     chown system /sys/devices/platform/gsensor/driver/cpsrange
+    chmod 0440 /sys/devices/soc/soc:gsensor@0/driver/pmrelax
+    chmod 0660 /sys/devices/soc/soc:gsensor@0/driver/tilt
+    chown system input /sys/devices/soc/soc:gsensor@0/driver/pmrelax
+    chown system input /sys/devices/soc/soc:gsensor@0/driver/tilt
 
     chown system system /dev/hwmsensor
     chown system system /dev/msensor
@@ -431,11 +459,19 @@ on post-fs-data
     #EM eint
     chown root diag /sys/bus/platform/drivers/eint/current_eint
 
+    # for ppp options file
+    mkdir /data/misc/ppp 0770 bluetooth net_bt
+
+    # for libipsec_ims
+    mkdir /data/misc/setkey 0770 root system
+    restorecon /data/misc/setkey
+
     # Android SEC related device nodes
     chmod 0660 /dev/sec
     chown root system /dev/sec
 
     # FM Radio device node
+    mknod /dev/fm     c 193 0;
     chmod 0660 /dev/fm
     chown media media /dev/fm
 
@@ -461,6 +497,9 @@ on post-fs-data
     # HDMI
     chown media system /dev/hdmitx
     chmod 0664 /dev/hdmitx
+
+    # JPEG
+    #chmod 0444 /dev/mtk_jpeg
 
     # almk
     chmod 0440 /dev/mtk_almk
@@ -513,6 +552,13 @@ on post-fs-data
     chown system camera /dev/LC898212AF
     chown system camera /dev/BU64745GWZAF
 
+    #MATV
+    chmod 0660 /dev/MATV
+    chown system media /dev/MATV
+
+    # otg_test
+    chown root radio /dev/mt_otg_test
+    chmod 0660 /dev/mt_otg_test
     # MDP
     chmod 0660 /dev/mt-mdp
     chown system media /dev/mt-mdp
@@ -546,6 +592,9 @@ on post-fs-data
     chmod 0660 /mtd@misc
     chown root system /mtd@misc
 
+    chmod 0664 /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
+    chown media media /sys/bus/platform/drivers/mem_bw_ctrl/concurrency_scenario
+
     #mtk_sched
     chmod 0660 /dev/mtk_sched
     chown system media /dev/mtk_sched
@@ -559,6 +608,12 @@ on post-fs-data
     #otp
     chmod 0660 /proc/driver/otp
     chown root system /proc/driver/otp
+
+    #sn
+    chmod 0664 /sys/class/android_usb/android0/iSerial
+    chown root system /sys/class/android_usb/android0/iSerial
+    chmod 0664 /sys/devices/platform/mt_usb/cmode
+    chown root system /sys/devices/platform/mt_usb/cmode
 
     # secure memory
     chown system system /proc/secmem0
@@ -606,6 +661,13 @@ on boot
     chmod 0770 /sys/power/tuxonice
     chmod 0220 /sys/power/tuxonice/do_hibernate
 
+
+
+# permissions for NFC
+		setprop ro.nfc.port "I2C"
+		chmod 0600 /dev/pn54x
+		chown nfc nfc /dev/pn54x
+
 # Smartbook Handler Framework
     chown system system /sys/power/sb_state
     chmod 0660 /sys/power/sb_state
@@ -633,6 +695,10 @@ on boot
     chmod 0660 /proc/ppm/policy/userlimit_min_cpu_core
     chown system system /proc/ppm/policy/userlimit_max_cpu_core
     chmod 0660 /proc/ppm/policy/userlimit_max_cpu_core
+    chown system system /proc/ppm/policy/userlimit_cpu_core
+    chmod 0660 /proc/ppm/policy/userlimit_cpu_core
+    chown system system /proc/ppm/policy/userlimit_cpu_freq
+    chmod 0660 /proc/ppm/policy/userlimit_cpu_freq
     chown system system /proc/ppm/dump_cluster_0_dvfs_table
     chmod 0440 /proc/ppm/dump_cluster_0_dvfs_table
     chown system system /proc/ppm/dump_cluster_1_dvfs_table
@@ -703,6 +769,30 @@ on property:ro.board.platform=mt6753
     chmod 0660 /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq
     write /sys/devices/system/cpu/cpufreq/interactive/hispeed_freq 1300000
 
+service stop_modem /vendor/bin/md_ctrl 0
+    class main
+    disabled
+    oneshot
+
+service start_modem /vendor/bin/md_ctrl 1
+    class main
+    disabled
+    oneshot
+# Define TCP buffer sizes for various networks
+#   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
+    setprop net.tcp.buffersize.default 4096,87380,524288,4096,16384,524288
+    setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.umts    4094,87380,524288,4096,16384,524288
+    setprop net.tcp.buffersize.hspa    4094,87380,524288,4096,16384,524288
+    setprop net.tcp.buffersize.hsupa   4094,87380,524288,4096,16384,524288
+    setprop net.tcp.buffersize.hsdpa   4094,87380,524288,4096,16384,524288
+    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
+    setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
+    setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
+
+    setprop persist.sys.strictmode.disable 1
+
 service nvram_daemon /vendor/bin/nvram_daemon
     class main
     user root
@@ -721,6 +811,44 @@ service NvRAMAgent /vendor/bin/nvram_agent_binder
     class main
     user system
     group system
+service atci_service /vendor/bin/atci_service
+    class core
+    socket atci-service stream 660 radio system
+    socket atci-serv-fw stream 660 radio system
+    user root
+    disabled
+    group radio system
+
+service atcid-daemon-u /vendor/bin/atcid
+    class main
+    socket adb_atci_socket stream 660 radio system
+    user system
+    group radio system media
+    disabled
+    oneshot
+
+service atcid-daemon-e /vendor/bin/atcid
+    class core
+    socket adb_atci_socket stream 660 radio system
+    user root
+    group radio system
+    disabled
+    oneshot
+
+on property:ro.build.type=eng
+start atci_service
+start atcid-daemon-e
+
+on property:persist.service.atci.autostart=1
+start atci_service
+start atcid-daemon-u
+
+service audio-daemon /vendor/bin/audiocmdservice_atci
+    class main
+    socket atci-audio stream 660 root system
+    user root
+    disabled
+    oneshot
 
 # SPM firmware loader
 service spm_script /vendor/bin/spm_loader
@@ -758,6 +886,15 @@ service wpa_supplicant /system/bin/wpa_supplicant \
     disabled
     oneshot
 
+#
+#  Modem related services (Begin)
+#
+service pppd_gprs /system/bin/pppd_dt /dev/ttyACM0 debug noauth refuse-eap usepeerdns nodetach
+    user root
+    group radio cache inet misc
+    disabled
+    oneshot
+
 # Location
 service agpsd /vendor/bin/mtk_agpsd
     class main
@@ -765,7 +902,7 @@ service agpsd /vendor/bin/mtk_agpsd
     socket agpsd2 stream 660 gps inet
     socket agpsd3 stream 660 gps inet
     user gps
-    group gps radio inet sdcard_r sdcard_rw misc
+    group gps radio inet sdcard_r sdcard_rw misc system
 
 service slpd /vendor/bin/slpd
     class main
@@ -814,12 +951,6 @@ service ami304d /vendor/bin/ami304d
     user system
     group system
     disabled
-    class main
-
-service bmibmmd /vendor/bin/bmibmmd
-    disabled
-    user system
-    group system
     class main
 
 service memsicd /vendor/bin/memsicd
@@ -876,21 +1007,22 @@ service geomagneticd /vendor/bin/geomagneticd
     group system input
     class main
 
-service memsicp /vendor/bin/memsicp
-   	user system
-    group system
-    class main
-
-service memsicpf /vendor/bin/memsicpf
-   	user system
-    group system
-    class main
-
 # Thermal
 service thermal_manager /vendor/bin/thermal_manager
     class main
     user root
+    group system
     oneshot
+
+service thermal /vendor/bin/thermal
+    class main
+    user system
+    group system
+
+service thermald /vendor/bin/thermald
+    class main
+    user system
+    group system
 
 service fuelgauged /vendor/bin/fuelgauged
     class main
@@ -926,3 +1058,90 @@ on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
     setprop sys.io.scheduler bfq
 
+on boot
+#
+# change the right of ip-up ip-down scripts(begin)
+#
+chmod 777 /etc/ppp/ip-up
+chmod 777 /etc/ppp/ip-down
+#
+# change the right of ip-up ip-down scripts(end)
+#
+
+#
+# change the right of ip-up-ppp0 ip-down-ppp0 scripts(begin)
+#
+chmod 777 /etc/ppp/ip-up-ppp0
+chmod 777 /etc/ppp/ip-down-ppp0
+#
+# change the right of ip-up ip-down scripts(end)
+#
+
+#set the property of persiste.radio.reset_on_switch
+setprop persist.radio.reset_on_switch false
+#end
+
+#set the property of rild.mark_switchuser
+setprop rild.mark_switchuser 0
+#end
+
+chmod 0644 /vendor/lib/libzteevdo-ril.so
+chomd 0644 /vendor/lib/zterilPara
+chown root /system/bin/pppd
+chmod 4755 /system/bin/pppd
+chown root /vendor/bin/chat
+chmod 4755 /vendor/bin/chat
+
+# Program binary service
+service program_binary /vendor/bin/program_binary_service
+    class late_start
+    user system
+    group graphics
+    oneshot
+
+service yamaha537 /vendor/bin/yamaha537 
+    disabled
+    user system
+    group system input
+    class main
+
+# jonny E-Compass 2nd source
+# gmc303/gme60x Daemon(gmadfs) init
+service gmadfs /vendor/bin/gmadfs -m -2
+	disabled
+	class main
+	user system
+	group system
+
+# MBIMD Service
+service mbimd /vendor/bin/mbimd debug
+    disabled
+    oneshot
+
+on property:service.mbim.enable=0
+    stop mbimd
+
+on property:service.mbim.enable=1
+    start mbimd
+
+on property:persist.mtk_usp_native_start=1
+    start usp_service
+    stop zygote_secondary
+    stop zygote
+    setprop persist.mtk_usp_native_start 0
+
+on property:persist.mtk_usp_native_start=0
+    start zygote
+    start zygote_secondary
+
+# Thermal Indicator Service
+
+service ThermalIndicator /vendor/bin/thermalindicator
+	class core
+	disabled
+
+on property:debug.mtk.thermalindicator=0
+	stop ThermalIndicator
+
+on property:debug.mtk.thermalindicator=1
+	start ThermalIndicator
