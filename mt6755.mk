@@ -79,10 +79,6 @@ PRODUCT_PACKAGES += \
     EngineerMode \
     YGPS
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/agps_profiles_conf2.xml:system/etc/agps_profiles_conf2.xml \
-    $(LOCAL_PATH)/configs/slp_conf:system/etc/slp_conf
-
 # Mediatek platform
 PRODUCT_PACKAGES += \
    libmtk_symbols
@@ -97,19 +93,11 @@ PRODUCT_PACKAGES += \
     muxreport \
     terservice
 
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/spn-conf.xml:system/etc/spn-conf.xml \
-
 # Wifi
 PRODUCT_PACKAGES += \
     libwpa_client \
     hostapd \
     wpa_supplicant \
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/wpa_supplicant.conf:system/etc/wifi/wpa_supplicant.conf \
-    $(LOCAL_PATH)/configs/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf \
-    $(LOCAL_PATH)/configs/p2p_supplicant_overlay.conf:system/etc/wifi/p2p_supplicant_overlay.conf
 
 # Charger Mode
 PRODUCT_PACKAGES += \
@@ -128,12 +116,15 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayouts/ACCDET.kl:system/usr/keylayout/ACCDET.kl \
     $(LOCAL_PATH)/keylayouts/mtk-kpd.kl:system/usr/keylayout/mtk-kpd.kl
 
+# Camera
+PRODUCT_PACKAGES += \
+    Snap
+
 # Media
 PRODUCT_COPY_FILES += \
 	frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:system/etc/media_codecs_google_audio.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_telephony.xml:system/etc/media_codecs_google_telephony.xml \
 	frameworks/av/media/libstagefright/data/media_codecs_google_video_le.xml:system/etc/media_codecs_google_video_le.xml \
-    $(LOCAL_PATH)/configs/mtk_omx_core.cfg:system/etc/mtk_omx_core.cfg
 
 # Build proprietary bits when available
 ifneq ($(MTKPATH),)
