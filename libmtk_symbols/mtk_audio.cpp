@@ -5,6 +5,10 @@ extern "C" {
         return 0;
     }
     
+    bool _ZN7android16MediaBufferGroupC1Ev(){
+        return 0;
+    }
+
     int _ZN7android11AudioSystem23GetVoiceUnlockDLLatencyEv(){
         return 0;
     }
