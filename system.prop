@@ -61,7 +61,6 @@ ro.boot.opt_eccci_c2k=1
 persist.log.tag.RILJ=D
 ro.boot.opt_using_default=1
 persist.ril.radio.nw.log=1
-ro.telephony.ril_class=MT6755
 
 # Media
 media.stagefright.legacyencoder=1
