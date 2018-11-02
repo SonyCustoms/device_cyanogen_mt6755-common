@@ -97,9 +97,6 @@ BOARD_MEDIATEK_USES_GPS := true
 # Recovery
 TARGET_USERIMAGES_USE_EXT4 := true
 
-# RIL
-BOARD_RIL_CLASS := ../../../device/cyanogen/mt6755-common/ril
-
 # Sensors
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
 TARGET_NO_SENSOR_PERMISSION_CHECK := true

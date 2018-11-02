@@ -19,6 +19,8 @@ on early-init
 on init
     export LD_PRELOAD "libmtk_symbols.so"
 
+    export BOOTCLASSPATH /system/framework/mediatek-telephony-common.jar
+
     # Platform-specific mount points
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
