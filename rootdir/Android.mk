@@ -24,4 +24,5 @@ $(call add-rootdir-targets, \
     init.usb.rc \
     init.volte.rc \
     init.wfca.rc \
+    init.mal.rc \
     ueventd.mt6755.rc)
