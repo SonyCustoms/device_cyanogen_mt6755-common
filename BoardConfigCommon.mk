@@ -129,13 +129,30 @@ TARGET_RELEASETOOLS_EXTENSIONS := $(COMMON_PATH)
 EXTENDED_FONT_FOOTPRINT := true
 
 # TWRP
+TW_DEFAULT_BRIGHTNESS := 80
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-TW_THEME := portrait_hdpi
 TW_USE_MODEL_HARDWARE_ID_FOR_DEVICE_ID := true
 TW_DEVICE_VERSION := 0
 RECOVERY_SDCARD_ON_DATA := true
 TW_BRIGHTNESS_PATH := /sys/devices/platform/leds-mt65xx/leds/lcd-backlight/brightness/
 TW_INCLUDE_CRYPTO := true
+TW_USE_TOOLBOX := true
+TWRP_INCLUDE_LOGCAT := true
 TW_MAX_BRIGHTNESS := 255
 TW_CUSTOM_CPU_TEMP_PATH := /sys/devices/virtual/thermal/thermal_zone1/temp
+TW_CUSTOM_BATTERY_PATH := "/sys/class/power_supply/battery"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/virtual/android_usb/android0/f_mass_storage/lun%d/file"
+TWHAVE_SELINUX := true
+# Enable Asian Language Support
+TW_EXTRA_LANGUAGES := true
+
+# Crypto
+TW_CRYPTO_REAL_BLKDEV := "/dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata" 
+TW_CRYPTO_MNT_POINT := "/data"
+TW_CRYPTO_KEY_LOC := "footer"
+TW_CRYPTO_FS_OPTIONS := "nosuid,nodev,noatime,discard,noauto_da_alloc,data =ordered"
+TW_INCLUDE_L_CRYPTO := true
+
+# Time Zone data for Recovery
+PRODUCT_COPY_FILES += \
+    bionic/libc/zoneinfo/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
