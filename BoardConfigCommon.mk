@@ -143,8 +143,6 @@ TW_CUSTOM_CPU_TEMP_PATH := /sys/devices/virtual/thermal/thermal_zone1/temp
 TW_CUSTOM_BATTERY_PATH := "/sys/class/power_supply/battery"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/virtual/android_usb/android0/f_mass_storage/lun%d/file"
 TWHAVE_SELINUX := true
-# Enable Asian Language Support
-TW_EXTRA_LANGUAGES := true
 
 # Crypto
 TW_CRYPTO_REAL_BLKDEV := "/dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata" 
