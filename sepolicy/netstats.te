@@ -1,1 +1,0 @@
-allow netstats : { create_dir_perms };

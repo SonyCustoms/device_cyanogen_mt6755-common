@@ -1,1 +1,0 @@
-allow power : { create_dir_perms };

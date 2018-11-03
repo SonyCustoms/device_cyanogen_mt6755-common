@@ -1,1 +1,0 @@
-allow wmt : { create_dir_perms };

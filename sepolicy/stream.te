@@ -1,1 +1,0 @@
-allow stream : { create_dir_perms };
