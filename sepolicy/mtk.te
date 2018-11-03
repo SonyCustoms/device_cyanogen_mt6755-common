@@ -1,0 +1,1 @@
+allow mtk init:udp_socket { rw_dir_perms };

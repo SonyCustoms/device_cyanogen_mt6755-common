@@ -1,0 +1,1 @@
+allow calendar : { create_dir_perms };

@@ -1,0 +1,1 @@
+allow am : { create_dir_perms };
