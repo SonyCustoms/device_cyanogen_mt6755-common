@@ -111,11 +111,6 @@ PRODUCT_PACKAGES += \
     tcpdump
 endif
 
-# Key Layouts
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayouts/ACCDET.kl:system/usr/keylayout/ACCDET.kl \
-    $(LOCAL_PATH)/keylayouts/mtk-kpd.kl:system/usr/keylayout/mtk-kpd.kl
-
 # Camera
 PRODUCT_PACKAGES += \
     Snap
