@@ -84,11 +84,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
    libmtk_symbols
 
-# Power
-PRODUCT_PACKAGES += \
-    power.default \
-    power.mt6755
-
 # Radio dependencies
 PRODUCT_PACKAGES += \
     muxreport \
