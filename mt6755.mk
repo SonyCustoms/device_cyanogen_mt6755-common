@@ -89,6 +89,10 @@ PRODUCT_PACKAGES += \
     muxreport \
     terservice
 
+#mtk_telephony
+PRODUCT_BOOT_JARS += \
+    mediatek-telephony-common.jar
+
 # Wifi
 PRODUCT_PACKAGES += \
     libwpa_client \
