@@ -25,7 +25,7 @@ on init
     mkdir /protect_s 0771 system system
     mkdir /nvcfg 0771 system system
     mkdir /persist   0771 system system
-    mkdir /nvdata    0771 system system
+    mkdir /nvdata 0771 system system
     mkdir /custom    0771 system system
 
 # Fix permission for telephony
@@ -118,22 +118,16 @@ on post-fs
 
     mkdir /protect_s/properties 0770 system system
 
-    mkdir /nvdata/md     0771 system radio
-    mkdir /nvdata/md_cmn 0771 system radio
-    mkdir /nvdata/media  0771 media audio
-    chown system system /nvcfg
-    chmod 0771 /nvcfg
-    restorecon_recursive /nvcfg
-    restorecon_recursive /nvdata/
-
 on post-fs-data
-    # Should create dependent /data folders here
+
+    # We chown/chmod /nvdata again so because mount is run as root + defaults
     chown root system /nvdata
     chmod 0771 /nvdata
     symlink /nvdata /data/nvram
     mkdir /nvdata/media 0771 media audio
-
-    # Set SELinux security contexts on upgrade or policy update.
+    chown system system /nvcfg
+    chmod 0771 /nvcfg
+    restorecon_recursive /nvcfg
     restorecon_recursive /nvdata
 
     chmod 0660 /data/misc/wifi/p2p_supplicant.conf
