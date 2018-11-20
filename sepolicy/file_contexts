@@ -389,6 +389,7 @@
 /dev/socket/led_socket(/.*)?	u:object_r:led_service_socket:s0
 /system/bin/led_service	u:object_r:led_service_exec:s0
 /vendor/bin/stp_dump3 u:object_r:stp_dump3_exec:s0
+/vendor/bin/yamaha537 u:object_r:yamaha537_exec:s0
 /vendor/bin/aal u:object_r:aal_exec:s0
 /vendor/bin/aee_core_forwarder u:object_r:aee_core_forwarder_exec:s0
 /vendor/bin/akmd09911 u:object_r:akmd09911_exec:s0

@@ -1,3 +1,174 @@
+#types
+#
+
+##
+type ccci_fsd_exec, exec_type, file_type;
+type ccci_fsd, domain;
+init_daemon_domain(ccci_fsd)
+wakelock_use(ccci_fsd)
+##
+
+##
+type ccci_mdinit_exec , exec_type, file_type;
+type ccci_mdinit ,domain;
+init_daemon_domain(ccci_mdinit)
+wakelock_use(ccci_mdinit)
+##
+
+##
+type ccci_rpcd_exec, exec_type, file_type;
+type ccci_rpcd, domain;
+init_daemon_domain(ccci_rpcd)
+wakelock_use(ccci_rpcd)
+##
+
+##
+type mtkmal, domain;
+type mtkmal_exec, exec_type, file_type;
+init_daemon_domain(mtkmal)
+##
+
+##
+type mtkrild_exec , exec_type, file_type;
+type mtkrild ,domain;
+init_daemon_domain(mtkrild)
+net_domain(mtkrild)
+##
+
+##
+type mtkrildmd2_exec , exec_type, file_type;
+type mtkrildmd2 ,domain;
+init_daemon_domain(mtkrildmd2)
+net_domain(mtkrildmd2)
+##
+
+##
+type nvram_agent_binder_exec , exec_type, file_type;
+type nvram_agent_binder ,domain;
+init_daemon_domain(nvram_agent_binder)
+binder_use(nvram_agent_binder)
+binder_service(nvram_agent_binder)
+##
+
+##
+type customization_target_file_exec , exec_type, file_type;
+type customization_target_file ,domain;
+init_daemon_domain(customization_target_file)
+##
+
+##
+type mtk_crossmount_exec , exec_type, file_type;
+type mtk_crossmount ,domain;
+init_daemon_domain(mtk_crossmount)
+##
+
+##
+type nvram_daemon_exec , exec_type, file_type;
+type nvram_daemon ,domain;
+init_daemon_domain(nvram_daemon)
+##
+
+##
+type ril-3gddaemon, domain;
+type ril-3gddaemon_exec, exec_type, file_type;
+init_daemon_domain(ril-3gddaemon)
+net_domain(ril-3gddaemon)
+##
+
+##
+type rilproxy_exec , exec_type, file_type;
+type rilproxy ,domain;
+init_daemon_domain(rilproxy)
+net_domain(rilproxy)
+wakelock_use(rilproxy)
+##
+
+##
+type wmt_loader_exec , exec_type, file_type;
+type wmt_loader ,domain;
+init_daemon_domain(wmt_loader)
+##
+
+##
+type mtk_wmt_launcher_exec , exec_type, file_type;
+type mtk_wmt_launcher ,domain;
+init_daemon_domain(mtk_wmt_launcher)
+##
+
+##
+type sysfs_ccci_exec , exec_type, file_type;
+type sysfs_ccci ,domain;
+init_daemon_domain(sysfs_ccci)
+##
+
+##
+type sysfs_ssw_exec , exec_type, file_type;
+type sysfs_ssw ,domain;
+init_daemon_domain(sysfs_ssw)
+##
+
+##
+type yamaha537_exec , exec_type, file_type;
+type yamaha537 ,domain;
+init_daemon_domain(yamaha537)
+##
+
+##
+type cache_pc_file_exec , exec_type, file_type;
+type cache_pc_file ,domain;
+init_daemon_domain(cache_pc_file)
+##
+
+##
+type suntrold_exec , exec_type, file_type;
+type suntrold ,domain;
+init_daemon_domain(suntrold)
+##
+
+##
+type suntrold_sock_socket_exec , exec_type, file_type;
+type suntrold_sock_socket ,domain;
+init_daemon_domain(suntrold_sock_socket)
+##
+
+##
+type embms_library_file_exec , exec_type, file_type;
+type embms_library_file ,domain;
+init_daemon_domain(embms_library_file)
+##
+
+##
+type debugfs_usb20_phy_exec , exec_type, file_type;
+type debugfs_usb20_phy ,domain;
+init_daemon_domain(debugfs_usb20_phy)
+##
+
+##
+type ims_mode_prop, property_type;
+type mtk_em_3gvt_prop, property_type;
+type mtk_em_bt_sspdebug_prop, property_type;
+type mtk_em_ims_prop, property_type;
+type mtk_em_prop, property_type;
+type mtk_em_ril_apnchange_prop, property_type;
+type semc_version_cust_active_prop, property_type;
+type usp_prop, property_type;
+##
+
+##
+unix_socket_connect(ril-3gddaemon, property, init)
+unix_socket_connect(radio, rild_vsim, mtkrild)
+unix_socket_connect(radio, rild_vsim_md2, mtkrild)
+unix_socket_connect(radio, rild_ims, mtkrild)
+unix_socket_connect(radio, rild-dongle, ril-3gddaemon)
+unix_socket_connect(radio, volte_imsa1, volte_imcb)
+unix_socket_connect(radio, agpsd, mtk_agpsd)
+unix_socket_connect(mtkrildmd2, property, init)
+unix_socket_connect(mtkrild, property, init)
+unix_socket_connect(ccci_mdinit, property, init)
+##
+
+#mtk
+#
 allow mtk_agpsd agps_device:chr_file { read lock getattr write ioctl open append };
 allow mtk_agpsd agpsd_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
 allow mtk_agpsd agpsd_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
@@ -68,7 +239,6 @@ allow mtk_crossmount mtk_crossmount:process { fork getsession sigkill sigchld se
 allow mtk_crossmount mtk_crossmount:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
 allow mtk_crossmount mtk_crossmount:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
 allow mtk_crossmount mtk_crossmount_exec:file { read open getattr entrypoint execute };
-allow mtk_crossmount mtk_crossmount_service:service_manager { add find };
 allow mtk_crossmount mtk_crossmount_tmpfs:file { read write };
 allow mtk_crossmount program_binary:binder { transfer call };
 allow mtk_crossmount program_binary:fd use;
@@ -225,8 +395,6 @@ allow mtkrild mtkrild_tmpfs:file { read write };
 allow mtkrild net_radio_prop:file { read lock ioctl open getattr };
 allow mtkrild net_radio_prop:property_service set;
 allow mtkrild para_block_device:blk_file { read lock getattr write ioctl open append };
-allow mtkrild persist_mtk_main_attach:file { read lock ioctl open getattr };
-allow mtkrild persist_mtk_main_attach:property_service set;
 allow mtkrild persist_ril_prop:file { read lock ioctl open getattr };
 allow mtkrild persist_ril_prop:property_service set;
 allow mtkrild persist_service_atci_prop:file { read lock ioctl open getattr };
@@ -606,7 +774,6 @@ allow nfc audioserver_service:service_manager find;
 allow nfc custom_file:dir getattr;
 allow nfc drmserver_service:service_manager find;
 allow nfc ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
-allow nfc ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
 allow nfc gpu_device:chr_file { read lock getattr write ioctl open append };
 allow nfc guiext-server:binder { transfer call };
 allow nfc guiext-server:fd use;
@@ -898,7 +1065,6 @@ allow radio ctl_rildaemon_prop:property_service set;
 allow radio custom_file:dir { read getattr open search };
 allow radio custom_file:file { read getattr open };
 allow radio customization_target_file:dir search;
-allow radio customization_target_file:file { read write create open getattr };
 allow radio customization_target_file:lnk_file read;
 allow radio debug_prop:property_service set;
 allow radio debugfs_usb20_phy:dir search;
@@ -907,15 +1073,11 @@ allow radio dm_agent_binder:binder call;
 allow radio dm_agent_binder_service:service_manager find;
 allow radio drmserver_service:service_manager find;
 allow radio ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
-allow radio ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
 allow radio em_svr:unix_stream_socket connectto;
-allow radio ext_telephony_service_server:service_manager { add find };
 allow radio gpu_device:chr_file { read lock getattr write ioctl open append };
-allow radio guard_service:service_manager { add find };
 allow radio guiext-server:binder { transfer call };
 allow radio guiext-server:fd use;
 allow radio guiext-server_service:service_manager find;
-allow radio hook_isms_service:service_manager add;
 allow radio hotknot_native:binder { transfer call };
 allow radio hotknot_native:fd use;
 allow radio ims_mode_prop:property_service set;
@@ -939,7 +1101,6 @@ allow radio mt6605_device:chr_file { read write ioctl open getattr };
 allow radio mt_otg_test_device:chr_file { read write ioctl open };
 allow radio mtgpio_device:chr_file { read ioctl open };
 allow radio mtk_agpsd:unix_stream_socket connectto;
-allow radio mtk_crossmount_service:service_manager find;
 allow radio mtk_em_3gvt_prop:property_service set;
 allow radio mtk_em_auto_answer_prop:property_service set;
 allow radio mtk_em_bt_sspdebug_prop:property_service set;
@@ -1038,7 +1199,6 @@ allow radio system_radio_prop:file { read lock ioctl open getattr };
 allow radio system_radio_prop:property_service set;
 allow radio ttyGS_device:chr_file { read write ioctl open };
 allow radio tun_device:chr_file { read write ioctl getattr append };
-allow radio usb_otg_switch:property_service set;
 allow radio usp_prop:property_service set;
 allow radio viarild:unix_stream_socket connectto;
 allow radio volte_imcb:unix_stream_socket connectto;

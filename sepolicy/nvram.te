@@ -5,7 +5,30 @@ type nvram_tuba ,domain;
 
 init_daemon_domain(nvram_tuba)
 
+##
+type service_nvram_init_prop, property_type;
+type usp_srv_prop, property_type;
+type wifi_5g_prop, property_type;
 
+##
+
+##
+type nvram_write_exec , exec_type, file_type;
+type nvram_write ,domain;
+init_daemon_domain(nvram_write)
+##
+
+##
+type tad_exec , exec_type, file_type;
+type tad ,domain;
+init_daemon_domain(tad)
+##
+
+##
+type tad_socket_exec , exec_type, file_type;
+type tad_socket ,domain;
+init_daemon_domain(tad_socket)
+##
 
 # Date : WK14.31
 # Operation : Migration 

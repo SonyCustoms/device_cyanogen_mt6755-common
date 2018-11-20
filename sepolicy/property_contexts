@@ -242,3 +242,15 @@ persist.auto_answer   u:object_r:mtk_em_auto_answer_prop:s0
 
 #=============allow smart audio pa  deamon  ==============
 smart_audio.        u:object_r:smart_audio_prop:s0
+
+ims_mode.           u:object_r:ims_mode_prop:s0
+mtk_em_3gvt.        u:object_r:mtk_em_3gvt_prop:s0
+mtk_em_bt_sspdebug. u:object_r:mtk_em_bt_sspdebug_prop:s0
+mtk_em_ims.         u:object_r:mtk_em_ims_prop:s0
+mtk_em.             u:object_r:mtk_em_prop:s0
+mtk_em_ril_apnchange.   u:object_r:mtk_em_ril_apnchange_prop:s0
+semc_version_cust_active.   u:object_r:semc_version_cust_active_prop:s0
+usp.                        u:object_r:usp_prop:s0
+service_nvram_init.         u:object_r:service_nvram_init_prop:s0
+usp_srv.                    u:object_r:usp_srv_prop:s0
+wifi_5g.                    u:object_r:wifi_5g_prop:s0
