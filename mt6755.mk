@@ -99,6 +99,9 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     charger_res_images
 
+PRODUCT_PACKAGES += \
+    Doze
+
 ifneq ($(TARGET_BUILD_VARIANT), eng)
 # Mediatek logging service
 PRODUCT_PACKAGES += \
