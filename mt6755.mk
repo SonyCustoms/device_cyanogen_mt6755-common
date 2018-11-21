@@ -38,6 +38,13 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
     $(LOCAL_PATH)/recovery/sbin/fuelgauged_static:recovery/root/sbin/fuelgauged_static
 
+# RIL
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.kernel.android.checkjni=0 \
+    ro.telephony.ril_class=MT6755 \
+    ro.telephony.ril.config=fakeiccid \
+    ro.com.android.mobiledata=false
+
 # ADB Debugging
 ADDITIONAL_DEFAULT_PROPERTIES += \
     ro.adb.secure=0 \
