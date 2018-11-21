@@ -31,7 +31,8 @@ LOCAL_SRC_FILES := \
     mtk_wvm.cpp \
     mtk_wifi.cpp \
     ipsec.cpp \
-    mtk_xlog.cpp
+    mtk_xlog.cpp \
+    ril/mtk_ril.cpp
 
 # only for 64bit libraries
 LOCAL_SRC_FILES_64 := mtk_parcel.cpp
