@@ -10,8 +10,8 @@ on property:ril.wfca=0
 
 service wfca /vendor/bin/wfca
     class core
-    socket wfca stream 777 root system
-    socket wfca_rds stream 777 root system
+    socket wfca stream 660 root system
+    socket wfca_rds stream 660 root system
     user root
     group system log inet radio net_admin root
 

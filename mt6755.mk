@@ -32,7 +32,17 @@ PRODUCT_PACKAGES += \
     init.usb.rc \
     init.volte.rc \
     init.wfca.rc \
-    ueventd.mt6755.rc
+    ueventd.mt6755.rc \
+    factory_init.connectivity.rc \
+    factory_init.project.rc \
+    factory_init.rc \
+    init.aee.rc \
+    init.qns.rc \
+    init.rc \
+    meta_init.connectivity.rc \
+    meta_init.modem.rc \
+    meta_init.project.rc \
+    meta_init.rc
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab \

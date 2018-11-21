@@ -1,10 +1,12 @@
 import init.connectivity.rc
 import init.project.rc
+import init.aee.rc
 import init.rilproxy.rc
 import init.volte.rc
 import init.mal.rc
 import init.epdg.rc
 import init.wfca.rc
+import init.qns.rc
 import init.common_svc.rc
 import init.target.rc
 
@@ -20,13 +22,16 @@ on early-init
 on init
     export LD_PRELOAD "libmtk_symbols.so"
 
+    # Expose exp_main
+    setprop persist.aee.preserve.main enable
     # Platform-specific mount points
     mkdir /protect_f 0771 system system
     mkdir /protect_s 0771 system system
-    mkdir /nvcfg 0777 system system
-    mkdir /persist   0771 system system
-    mkdir /nvdata 0777 system system
-    mkdir /custom    0771 system system
+    mkdir /nvcfg 0771 system system
+#Create nvdata mount point
+    mkdir /nvdata 0771 system system
+# Create CIP mount point
+    mkdir /custom
 
 # Fix permission for telephony
     chmod 0644 /proc/cmdline
@@ -84,6 +89,17 @@ on property:persist.service.battery.charge=1
 
 on fs
     mount_all /fstab.mt6755
+    exec /system/bin/tune2fs -O has_journal -u 10010 -r 4096 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/userdata
+    write /sys/kernel/debug/tracing/trace_marker "E"
+    write /proc/bootprof "INIT:Mount_END"
+    insmod /system/lib/modules/texfat.ko
+    #mount Qnovo
+    mkdir /qns 0750 qns qns
+    wait /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/Qnovo
+    mount ext4 /dev/block/platform/mtk-msdc.0/11230000.msdc0/by-name/Qnovo /qns nosuid nodev noatime noexec barrier=0 discard
+    chown qns qns /qns
+    chmod 0750 /qns
+    restorecon_recursive /qns
 
 on post-fs
     symlink /sdcard /storage/sdcard0
@@ -120,14 +136,19 @@ on post-fs
 
 on post-fs-data
 
+    chown system system /nvcfg
+    chmod 0771 /nvcfg
+    restorecon_recursive /nvcfg
+
+    # create basic filesystem structure
+    # mkdir /data/nvram 2770 root system
     # We chown/chmod /nvdata again so because mount is run as root + defaults
     chown root system /nvdata
-    chmod 0777 /nvdata
+    chmod 0771 /nvdata
     symlink /nvdata /data/nvram
-    mkdir /nvdata/media 0777 media audio
-    chown system system /nvcfg
-    chmod 0777 /nvcfg
-    restorecon_recursive /nvcfg
+    mkdir /nvdata/media 0771 media audio
+
+    # Set SELinux security contexts on upgrade or policy update.
     restorecon_recursive /nvdata
 
     chmod 0660 /data/misc/wifi/p2p_supplicant.conf
@@ -136,10 +157,10 @@ on post-fs-data
     chmod 0660 /dev/rfkill
 
     # Radio
-    mkdir /dev/radio 0777 radio radio
-    mkdir /data/drm/wv 0777 drm system
-
-    # GPS
+    mkdir /dev/radio 0770 radio radio
+    mkdir /data/drm/wv 0770 drm system
+    symlink /oem/android-config/agps_profiles_conf2.xml /data/customization/agps_profiles_conf2.xml
+# GPS
     mkdir /data/gps_mnl 0771 gps system
     mkdir /data/mpe_mnl 0771 gps system
     mkdir /data/misc/gps 0770 gps system
@@ -486,7 +507,7 @@ on post-fs-data
 
     # EM baseband file
     chown root diag /vendor/bin/baseband_regdump
-    chmod 0777 /vendor/bin/baseband_regdump
+    chmod 4750 /vendor/bin/baseband_regdump
 
     #pmu
     chown root radio /sys/devices/platform/mt-pmic/pmic_access_bank0
@@ -639,7 +660,7 @@ on post-fs-data
     chmod 0640 /mtd@recovery
     chown root system /mtd@recovery
 
-    chmod 0777 /mtd@nvram
+    chmod 0660 /mtd@nvram
     chown root system /mtd@nvram
 
     chmod 0660 /mtd@seccfg
@@ -721,7 +742,7 @@ on boot
 
 # permissions for NFC
     setprop ro.nfc.port "I2C"
-	chmod 0600 /dev/pn54x
+	chmod 0777 /dev/pn54x
 	chown nfc nfc /dev/pn54x
 
 # Smartbook Handler Framework
@@ -849,6 +870,58 @@ service start_modem /vendor/bin/md_ctrl 1
 
     setprop persist.sys.strictmode.disable 1
 
+## mtk printk uart controller
+on property:persist.uartconsole.enable=1
+    write /proc/mtprintk 1
+
+# Update the second boot logo
+service bootlogoupdater /vendor/bin/boot_logo_updater
+    class core
+    oneshot
+
+service mobile_log_d /vendor/bin/mobile_log_d
+    class main
+
+service mmedialogstart /vendor/bin/mobile_log_d --ftrace mmedia
+    oneshot
+    disabled
+
+service bsplogstart /vendor/bin/mobile_log_d --ftrace bsp
+    oneshot
+    disabled
+
+service trace_buf_off /vendor/bin/mobile_log_d --ftrace off
+    oneshot
+    disabled
+
+# ftrace log buffer control
+on property:ftrace.buffer.log=mmedia
+    start mmedialogstart
+
+on property:ftrace.buffer.log=bsp
+    start bsplogstart
+
+on property:ftrace.buffer.log=off
+    start trace_buf_off
+
+# MTK PR_DEBUG SWITCH
+on property:debug.MB.prdebug=1
+    write /sys/kernel/debug/dynamic_debug/control "file *mediatek* +p"
+    write /sys/kernel/debug/dynamic_debug/control "file *gpu* -p"
+on property:debug.MB.prdebug=0
+    write /sys/kernel/debug/dynamic_debug/control "file *mediatek* -p"
+
+service met_log_d /vendor/bin/met_log_d
+    class main
+
+# bugreport is triggered by holding down volume down, volume up and power
+service bugreport /system/bin/dumpstate -d -p -B \
+        -o /data/user_de/0/com.android.shell/files/bugreports/bugreport
+    class main
+    disabled
+    oneshot
+    keycodes 114 115 116
+
 # start ged_srv
 on property:sys.boot_completed=1
     start ged_srv
@@ -882,6 +955,18 @@ service nvram_tuba /system/bin/nvram_tuba
     user root
     oneshot
 #CEI comments end
+
+service pl_calibration /system/bin/pl_calibration
+    class main
+    user root
+    group system
+    oneshot
+
+service sysenv_daemon /vendor/bin/sysenv_daemon
+    class main
+    user system
+    group system
+    oneshot
 
 service NvRAMAgent /vendor/bin/nvram_agent_binder
     class main
@@ -925,6 +1010,21 @@ service audio-daemon /vendor/bin/audiocmdservice_atci
     user root
     disabled
     oneshot
+
+service md_minilog_util /vendor/bin/md_minilog_util
+    user root
+    disabled
+    oneshot
+
+service pq /vendor/bin/pq
+    class main
+    user system
+    group system graphics
+
+service aal /vendor/bin/aal
+    class main
+    user system
+    group system graphics
 
 # SPM firmware loader
 service spm_script /vendor/bin/spm_loader
@@ -1094,6 +1194,51 @@ service vtservice /vendor/bin/vtservice
     group system camera graphics inet net_admin net_raw media sdcard_rw radio sdcard_r media_rw
     ioprio rt 4
 
+service mediacodec /system/bin/mediacodec
+    class main
+    user mediacodec
+    group media system audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm sdcard_rw
+    ioprio rt 4
+
+service cmmb /system/bin/cmmbsp
+    class main
+    user root
+    group system audio camera graphics inet net_bt net_bt_admin net_bw_acct media
+    ioprio rt 4
+
+service enableswap /system/bin/sh /enableswap.sh
+    class late_start
+    oneshot
+    seclabel u:r:enableswap:s0
+
+service swapoff_action /system/bin/sh /disableswap.sh
+    class main
+    disabled
+    oneshot
+
+service dbus /system/bin/dbus-daemon --system --nofork
+    class main
+    socket dbus stream 660 bluetooth bluetooth
+    user bluetooth
+    group bluetooth net_bt_admin
+
+service bluetoothd /system/bin/bluetoothd -n
+    class main
+    socket bluetooth stream 660 bluetooth bluetooth
+    socket dbus_bluetooth stream 660 bluetooth bluetooth
+    # init.rc does not yet support applying capabilities, so run as root and
+    # let bluetoothd drop uid to bluetooth with the right linux capabilities
+    group bluetooth net_bt_admin misc
+    disabled
+
+#service dpfd /vendor/bin/dpfd
+#	user root
+#	group system media
+
+#
+#  External Modme control related services
+#
+
 #
 #  Modem related services (Begin)
 #
@@ -1116,6 +1261,71 @@ service slpd /vendor/bin/slpd
     class main
     user gps
     group gps inet
+
+service ipod /vendor/bin/ipod
+    user root
+    group root
+    disabled
+
+service extmdlogger /vendor/bin/extmdlogger
+    class main
+    user shell
+    group shell system radio sdcard_rw inet sdcard_r media_rw
+
+service mdlogger /vendor/bin/mdlogger
+    class main
+    user shell
+    group shell system radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+
+service dualmdlogger /vendor/bin/dualmdlogger
+    class main
+    user shell
+    group shell system radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+
+service emdlogger1 /vendor/bin/emdlogger1
+    class main
+    user shell
+    group system shell radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+
+service emdlogger2 /vendor/bin/emdlogger2
+    class main
+    user shell
+    group system shell radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+service emdlogger3 /vendor/bin/emdlogger3
+    class main
+    user shell
+    group system shell radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+service emdlogger5 /vendor/bin/emdlogger5
+    class main
+    user shell
+    group system shell radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+
+service emdlogger6 /vendor/bin/emdlogger6
+    class main
+    user shell
+    group system shell radio sdcard_rw inet sdcard_r media_rw
+    disabled
+    oneshot
+
+service md_monitor /vendor/bin/md_monitor
+    class main
+    user system
+    group system radio sdcard_rw inet sdcard_r media_rw
+
+#on property:ro.mtk_modem_monitor_support=1
+#start md_monitor
 
 service wifi2agps /vendor/bin/wifi2agps
     class main
@@ -1215,6 +1425,32 @@ service geomagneticd /vendor/bin/geomagneticd
     group system input
     class main
 
+#
+#emsvr service (start)
+#
+on property:ro.build.type=eng
+    start emsvr
+
+on property:ro.build.type=user
+    start emsvr_user
+
+on property:ro.build.type=userdebug
+    start emsvr_user
+
+service emsvr_user /vendor/bin/em_svr
+    disabled
+    user system
+    group system radio diag net_bt_stack
+
+service emsvr /vendor/bin/em_svr
+    disabled
+    user root
+    group net_bt_stack
+
+#
+#emsvr service (end)
+#
+
 # Thermal
 service thermal_manager /vendor/bin/thermal_manager
     class main
@@ -1236,6 +1472,25 @@ service fuelgauged /vendor/bin/fuelgauged
     class main
     user system
     group system
+
+service sn /vendor/bin/sn
+    class late_start
+    user system
+    group system sdcard_rw
+    oneshot
+
+#add for power-off alarm
+service poad /vendor/bin/poad
+    class main
+    user system
+    group system
+    oneshot
+
+#monitor battery status
+service batterywarning /vendor/bin/batterywarning
+    class main
+    user shell
+    group shell
 
 # Graphics
 # start ged_srv
@@ -1261,6 +1516,9 @@ service charger /sbin/healthd -c
     class charger
     critical
     seclabel u:r:healthd:s0
+
+service kpoc_charger /vendor/bin/kpoc_charger
+    class charger
 
 on property:sys.boot_completed=1
 # Set preferred IO scheduler after boot
