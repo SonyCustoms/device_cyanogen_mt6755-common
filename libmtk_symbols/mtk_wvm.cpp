@@ -17,4 +17,10 @@ extern "C"{
         int64_t res = readOptions->getLateBy();
         return res;
     }
+    
+    int _ZN7android16MediaBufferGroupC1Ej();
+
+    int _ZN7android16MediaBufferGroupC1Ev() {
+        return _ZN7android16MediaBufferGroupC1Ej();
+    }
 }
