@@ -17,25 +17,23 @@
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
-LOCAL_MODULE := libmtk_symbols
+LOCAL_MODULE := libtuba
 LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := \
-    icu55.c \
-    net.c \
-    mtk_audio.cpp \
-    mtk_bionic.cpp \
-    mtk_gui.cpp \
-    mtk_omx.cpp \
-    mtk_ui.cpp \
-    mtk_wvm.cpp \
-    mtk_wifi.cpp \
-    ipsec.cpp \
-    mtk_xlog.cpp \
-    ril/mtk_ril.cpp
+    inet.c \
+    tuba_audio.cpp \
+    tuba_bionic.cpp \
+    tuba_gui.cpp \
+    tuba_omx.cpp \
+    tuba_ui.cpp \
+    tuba_wvm.cpp \
+    tuba_wifi.cpp \
+    tuba_xlog.cpp \
+    ril/tuba_ril.cpp
 
 # only for 64bit libraries
-LOCAL_SRC_FILES_64 := mtk_parcel.cpp
+LOCAL_SRC_FILES_64 := tuba_parcel.cpp
 
 LOCAL_SHARED_LIBRARIES := libbinder libc liblog libgui libui libicuuc libicui18n libmedia
 include $(BUILD_SHARED_LIBRARY)

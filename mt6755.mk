@@ -99,7 +99,7 @@ PRODUCT_PACKAGES += \
 
 # Mediatek platform
 PRODUCT_PACKAGES += \
-   libmtk_symbols
+   libtuba
 
 # Radio dependencies
 PRODUCT_PACKAGES += \

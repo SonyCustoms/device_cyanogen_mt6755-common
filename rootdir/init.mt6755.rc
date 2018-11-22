@@ -20,7 +20,7 @@ on early-init
     write /sys/class/leds/lcd-backlight/trigger "backlight"
 
 on init
-    export LD_PRELOAD "libmtk_symbols.so"
+    export LD_PRELOAD "libtuba.so"
 
     # Expose exp_main
     setprop persist.aee.preserve.main enable
