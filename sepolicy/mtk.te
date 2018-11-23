@@ -51,12 +51,6 @@ binder_service(nvram_agent_binder)
 ##
 
 ##
-type customization_target_file_exec , exec_type, file_type;
-type customization_target_file ,domain;
-init_daemon_domain(customization_target_file)
-##
-
-##
 type mtk_crossmount_exec , exec_type, file_type;
 type mtk_crossmount ,domain;
 init_daemon_domain(mtk_crossmount)
@@ -96,18 +90,6 @@ init_daemon_domain(mtk_wmt_launcher)
 ##
 
 ##
-type sysfs_ccci_exec , exec_type, file_type;
-type sysfs_ccci ,domain;
-init_daemon_domain(sysfs_ccci)
-##
-
-##
-type sysfs_ssw_exec , exec_type, file_type;
-type sysfs_ssw ,domain;
-init_daemon_domain(sysfs_ssw)
-##
-
-##
 type yamaha537_exec , exec_type, file_type;
 type yamaha537 ,domain;
 init_daemon_domain(yamaha537)
@@ -125,16 +107,11 @@ type suntrold ,domain;
 init_daemon_domain(suntrold)
 ##
 
-##
-type suntrold_sock_socket_exec , exec_type, file_type;
-type suntrold_sock_socket ,domain;
-init_daemon_domain(suntrold_sock_socket)
-##
 
 ##
-type embms_library_file_exec , exec_type, file_type;
-type embms_library_file ,domain;
-init_daemon_domain(embms_library_file)
+type embms_library_exec , exec_type, file_type;
+type embms_library ,domain;
+init_daemon_domain(embms_library)
 ##
 
 ##

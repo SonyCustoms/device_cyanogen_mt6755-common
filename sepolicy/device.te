@@ -2,6 +2,22 @@
 # MTK Policy Rule
 # ==============================================
 
+type m_fusion_misc_device, dev_type;
+type m_step_c_misc_device, dev_type;
+type LC898212XDAF_device, dev_type;
+type BU64747GWZAF_device, dev_type;
+type BU24228GWLAF_device, dev_type;
+type BU64245GWZAF_device, dev_type;
+type m_gyro_misc_device, dev_type;
+type m_hmdy_misc_device, dev_type;
+type m_baro_misc_device, dev_type;
+type m_pedo_misc_device, dev_type;
+type m_tilt_misc_device, dev_type;
+type m_act_misc_device, dev_type;
+type m_ges_misc_device, dev_type;
+type m_als_misc_device, dev_type;
+type camera_tsf_device, dev_type;
+type m_ps_misc_device, dev_type;
 type devmap_device, dev_type;
 type ttyMT_device, dev_type;
 type ttySDIO_device, dev_type;

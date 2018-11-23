@@ -7,10 +7,6 @@ type ecryptfs, domain;
 type ecryptfs_exec, exec_type, file_type;
 init_daemon_domain(ecryptfs)
 
-type sysfs_leds, domain;
-type sysfs_leds_exec, exec_type, file_type;
-init_daemon_domain(sysfs_leds)
-
 allow debuggerd led_service:process { getattr ptrace };
 allow guiext-server led_service:binder { transfer call };
 allow guiext-server led_service:fd use;

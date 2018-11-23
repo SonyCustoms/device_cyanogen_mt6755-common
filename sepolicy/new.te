@@ -1,0 +1,75 @@
+##
+type gmadfs_exec , exec_type, file_type;
+type gmadfs ,domain;
+init_daemon_domain(gmadfs)
+##
+##
+type gmadfs306_exec , exec_type, file_type;
+type gmadfs306 ,domain;
+init_daemon_domain(gmadfs306)
+##
+##
+type gmadfs306_sm21_sp1_exec , exec_type, file_type;
+type gmadfs306_sm21_sp1 ,domain;
+init_daemon_domain(gmadfs306_sm21_sp1)
+##
+##
+type gmadfs306_sm21_sp2_exec , exec_type, file_type;
+type gmadfs306_sm21_sp2 ,domain;
+init_daemon_domain(gmadfs306_sm21_sp2)
+##
+##
+type ipsec_mon_exec , exec_type, file_type;
+type ipsec_mon ,domain;
+init_daemon_domain(ipsec_mon)
+##
+##
+type usp_service_exec , exec_type, file_type;
+type usp_service ,domain;
+init_daemon_domain(usp_service)
+##
+##
+type sysenv_daemon_exec , exec_type, file_type;
+type sysenv_daemon ,domain;
+init_daemon_domain(sysenv_daemon)
+##
+##
+type thermalindicator_exec , exec_type, file_type;
+type thermalindicator ,domain;
+init_daemon_domain(thermalindicator)
+##
+##
+type embms_library_file, file_type, data_file_type;
+##
+##
+type idd_data_file , exec_type, file_type;
+type idd_data ,domain;
+init_daemon_domain(idd_data)
+##
+##
+type DW9790A_device , exec_type, dev_type;
+type DW9790A_exec , exec_type, file_type;
+type DW9790A ,domain;
+init_daemon_domain(DW9790A)
+##
+##
+type klog_data_file , exec_type, file_type;
+type idd_fsck_file , exec_type, file_type;
+type idd_data_exec , exec_type, file_type;
+type idd_output_file , exec_type, file_type;
+type idd_socket_file , exec_type, file_type;
+type fuelgauged_file , exec_type, file_type;
+type scd_data_file , exec_type, file_type;
+##
+##
+type qns_file , exec_type, file_type;
+type qns_exec , exec_type, file_type;
+type qns ,domain;
+init_daemon_domain(qns)
+##
+##
+type idd_rca_file , exec_type, file_type;
+type idd_rca_exec , exec_type, file_type;
+type idd_rca ,domain;
+init_daemon_domain(idd_rca)
+##
