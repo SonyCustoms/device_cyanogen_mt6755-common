@@ -1,0 +1,812 @@
+##
+type gmadfs_exec , exec_type, file_type;
+type gmadfs ,domain;
+init_daemon_domain(gmadfs)
+##
+
+##
+type gmadfs306_exec , exec_type, file_type;
+type gmadfs306 ,domain;
+init_daemon_domain(gmadfs306)
+##
+
+##
+type gmadfs306_sm21_sp1_exec , exec_type, file_type;
+type gmadfs306_sm21_sp1 ,domain;
+init_daemon_domain(gmadfs306_sm21_sp1)
+##
+
+##
+type gmadfs306_sm21_sp2_exec , exec_type, file_type;
+type gmadfs306_sm21_sp2 ,domain;
+init_daemon_domain(gmadfs306_sm21_sp2)
+##
+
+##
+type ipsec_mon_exec , exec_type, file_type;
+type ipsec_mon ,domain;
+init_daemon_domain(ipsec_mon)
+##
+
+##
+type starter_exec , exec_type, file_type;
+type starter ,domain;
+init_daemon_domain(starter)
+##
+
+##
+type charon_exec , exec_type, file_type;
+type ipsec_exec , exec_type, file_type;
+type stroke_exec , exec_type, file_type;
+type ipsec ,domain;
+##
+
+##
+type usp_service_exec , exec_type, file_type;
+type usp_service ,domain;
+init_daemon_domain(usp_service)
+##
+
+##
+type sysenv_daemon_exec , exec_type, file_type;
+type sysenv_daemon ,domain;
+init_daemon_domain(sysenv_daemon)
+##
+
+##
+type thermal_exec , exec_type, file_type;
+type thermal ,domain;
+init_daemon_domain(thermal)
+type thermald_exec , exec_type, file_type;
+type thermald ,domain;
+init_daemon_domain(thermald)
+type thermalloadalgod ,domain;
+type thermalloadalgod_exec , exec_type, file_type;
+init_daemon_domain(thermalloadalgod)
+file_type_auto_trans(thermal_manager, system_data_file, thermal_manager_data_file)
+type thermal_manager_exec , exec_type, file_type;
+type thermal_manager ,domain;
+init_daemon_domain(thermal_manager)
+type thermalindicator_exec , exec_type, file_type;
+type thermalindicator ,domain;
+init_daemon_domain(thermalindicator)
+##
+
+##
+type idd_data_file , exec_type, file_type;
+type idd_data ,domain;
+init_daemon_domain(idd_data)
+##
+
+##
+type DW9790A_device , exec_type, dev_type;
+type DW9790A_exec , exec_type, file_type;
+type DW9790A ,domain;
+init_daemon_domain(DW9790A)
+##
+
+##
+type klog_data_file , exec_type, file_type;
+type idd_fsck_file , exec_type, file_type;
+type idd_data_exec , exec_type, file_type;
+type idd_output_file , exec_type, file_type;
+type idd_socket_file , exec_type, file_type;
+type fuelgauged_file , exec_type, file_type;
+type scd_data_file , exec_type, file_type;
+##
+
+##
+type qns_file , exec_type, file_type;
+type qns_exec , exec_type, file_type;
+type qns ,domain;
+type qns_sysfs ,domain;
+init_daemon_domain(qns)
+##
+
+##
+type idd_rca_file , exec_type, file_type;
+type idd_rca_exec , exec_type, file_type;
+type idd_rca ,domain;
+init_daemon_domain(idd_rca)
+##
+
+#nvram_tuba
+#
+type nvram_tuba_exec , exec_type, file_type;
+type nvram_tuba ,domain;
+
+init_daemon_domain(nvram_tuba)
+
+##
+type service_nvram_init_prop, property_type;
+type usp_srv_prop, property_type;
+type wifi_5g_prop, property_type;
+
+##
+
+##
+type nvram_write_exec , exec_type, file_type;
+type nvram_write ,domain;
+init_daemon_domain(nvram_write)
+##
+
+##
+type tad_exec , exec_type, file_type;
+type tad ,domain;
+init_daemon_domain(tad)
+##
+
+##
+type tad_socket_exec , exec_type, file_type;
+type tad_socket ,domain;
+init_daemon_domain(tad_socket)
+##
+
+# Date : WK14.31
+# Operation : Migration 
+# Purpose : the device is used to store Nvram backup data that can not be lost. 
+allow nvram_tuba nvram_device:blk_file rw_file_perms;
+allow nvram_tuba mmcblk0_block_device:blk_file rw_file_perms;
+allow nvram_tuba nvdata_device:blk_file rw_file_perms;
+
+
+# Date : WK14.34
+# Operation : Migration 
+# Purpose : the option is used to tell that if other processes can access nvram. 
+allow nvram_tuba system_prop:property_service set;
+allow nvram_tuba mtk_wifi_prop:property_service set;
+
+# Date : WK14.35
+# Operation : chown folder and file permission 
+# Purpose : ensure nvram user can access nvram file normally when upgrade from KK/KK.AOSP to L. 
+allow nvram_tuba shell_exec:file { x_file_perms read open };
+allow nvram_tuba nvram_data_file:dir create_dir_perms;
+allow nvram_tuba nvram_data_file:file create_file_perms;
+allow nvram_tuba nvram_data_file:lnk_file read;
+allow nvram_tuba nvdata_file:dir create_dir_perms;
+allow nvram_tuba nvdata_file:file create_file_perms;
+
+allow nvram_tuba system_file:file execute_no_trans;
+
+# Date : WK14.43
+allow nvram_tuba als_ps_device:chr_file { read ioctl open };
+allow nvram_tuba mtk-adc-cali_device:chr_file { read write ioctl open };
+allow nvram_tuba gsensor_device:chr_file { read ioctl open };
+allow nvram_tuba gyroscope_device:chr_file { read ioctl open };
+allow nvram_tuba init:unix_stream_socket connectto;
+
+# Purpose: for property set
+allow nvram_tuba property_socket:sock_file write;
+allow nvram_tuba sysfs:file write;
+allow nvram_tuba system_data_file:file { read open getattr };
+allow nvram_tuba self:capability { fowner chown dac_override fsetid };
+allow nvram_tuba system_data_file:dir { create write add_name };
+
+# Purpose: for backup
+allow nvram_tuba nvram_device:chr_file {read write open ioctl};
+allow nvram_tuba pro_info_device:chr_file {read write open ioctl};
+
+allow nvram_tuba block_device:dir search;
+
+# Purpose: for nand project
+allow nvram_tuba mtd_device:dir search;
+allow nvram_tuba mtd_device:chr_file { read write open };
+
+# Purpose: for fstab parser
+allow nvram_tuba kmsg_device:chr_file { write open };
+allow nvram_tuba proc_lk_env:file { read write ioctl open };
+
+# Purpose: for workaround
+# Todo: Remove this policy
+#allow nvram_tuba system_data_file:dir write;
+
+# Nougat
+allow nvram_tuba sysfs:file { write read open };
+allow nvram_tuba rootfs:dir { read open };
+allow nvram_tuba rootfs:file r_file_perms;
+allow nvram_tuba toolbox_exec:file { r_file_perms execute execute_no_trans };
+allow nvram_tuba rootfs:lnk_file { getattr };
+
+allow nvram_agent_binder als_ps_device:chr_file { read lock ioctl open getattr };
+allow nvram_agent_binder app_data_file:file write;
+allow nvram_agent_binder block_device:dir search;
+allow nvram_agent_binder ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_agent_binder ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_agent_binder gsensor_device:chr_file { read lock ioctl open getattr };
+allow nvram_agent_binder guiext-server:binder { transfer call };
+allow nvram_agent_binder guiext-server:fd use;
+allow nvram_agent_binder guiext-server_service:service_manager find;
+allow nvram_agent_binder gyroscope_device:chr_file { read lock ioctl open getattr };
+allow nvram_agent_binder hotknot_native:binder { transfer call };
+allow nvram_agent_binder hotknot_native:fd use;
+allow nvram_agent_binder init:process sigchld;
+allow nvram_agent_binder init:unix_stream_socket connectto;
+allow nvram_agent_binder mmcblk0_block_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder mtd_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder mtd_device:dir search;
+allow nvram_agent_binder mtk-adc-cali_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder nvdata_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder nvdata_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_agent_binder nvdata_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_agent_binder nvram_agent_binder:capability { fowner chown fsetid dac_override };
+allow nvram_agent_binder nvram_agent_binder:dir { search read lock getattr ioctl open };
+allow nvram_agent_binder nvram_agent_binder:fd use;
+allow nvram_agent_binder nvram_agent_binder:fifo_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder nvram_agent_binder:file { read lock getattr write ioctl open append };
+allow nvram_agent_binder nvram_agent_binder:lnk_file { read lock ioctl open getattr };
+allow nvram_agent_binder nvram_agent_binder:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow nvram_agent_binder nvram_agent_binder:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow nvram_agent_binder nvram_agent_binder:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow nvram_agent_binder nvram_agent_binder_exec:file { read open getattr entrypoint execute };
+allow nvram_agent_binder nvram_agent_binder_tmpfs:file { read write };
+allow nvram_agent_binder nvram_agent_service:service_manager add;
+allow nvram_agent_binder nvram_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_agent_binder nvram_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_agent_binder nvram_data_file:lnk_file read;
+allow nvram_agent_binder nvram_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder nvram_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder pro_info_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_agent_binder program_binary:binder { transfer call };
+allow nvram_agent_binder program_binary:fd use;
+allow nvram_agent_binder property_socket:sock_file write;
+allow nvram_agent_binder servicemanager:binder { transfer call };
+allow nvram_agent_binder sysfs:dir { search read lock getattr ioctl open };
+allow nvram_agent_binder sysfs:file { read lock getattr write ioctl open };
+allow nvram_agent_binder sysfs:lnk_file { read lock ioctl open getattr };
+allow nvram_agent_binder system_app:dir search;
+allow nvram_agent_binder system_data_file:dir { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_agent_binder system_data_file:file open;
+allow nvram_agent_binder system_file:file execute_no_trans;
+allow nvram_daemon als_ps_device:chr_file { read lock ioctl open getattr };
+allow nvram_daemon block_device:dir search;
+allow nvram_daemon ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_daemon ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_daemon gsensor_device:chr_file { read lock ioctl open getattr };
+allow nvram_daemon guiext-server:binder { transfer call };
+allow nvram_daemon guiext-server:fd use;
+allow nvram_daemon guiext-server_service:service_manager find;
+allow nvram_daemon gyroscope_device:chr_file { read lock ioctl open getattr };
+allow nvram_daemon hotknot_native:binder { transfer call };
+allow nvram_daemon hotknot_native:fd use;
+allow nvram_daemon init:process sigchld;
+allow nvram_daemon init:unix_stream_socket connectto;
+allow nvram_daemon kmsg_device:chr_file { write lock open append };
+allow nvram_daemon mmcblk0_block_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_daemon mtd_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_daemon mtd_device:dir search;
+allow nvram_daemon mtk-adc-cali_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_daemon nvdata_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_daemon nvdata_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_daemon nvdata_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_daemon nvram_daemon:capability { fowner chown fsetid dac_override };
+allow nvram_daemon nvram_daemon:dir { search read lock getattr ioctl open };
+allow nvram_daemon nvram_daemon:fd use;
+allow nvram_daemon nvram_daemon:fifo_file { read lock getattr write ioctl open append };
+allow nvram_daemon nvram_daemon:file { read lock getattr write ioctl open append };
+allow nvram_daemon nvram_daemon:lnk_file { read lock ioctl open getattr };
+allow nvram_daemon nvram_daemon:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow nvram_daemon nvram_daemon:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow nvram_daemon nvram_daemon:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow nvram_daemon nvram_daemon_exec:file { read open getattr entrypoint execute };
+allow nvram_daemon nvram_daemon_tmpfs:file { read write };
+allow nvram_daemon nvram_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_daemon nvram_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_daemon nvram_data_file:lnk_file read;
+allow nvram_daemon nvram_device:blk_file { read lock getattr write ioctl open append };
+allow nvram_daemon nvram_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_daemon oemfs:dir { read search open };
+allow nvram_daemon oemfs:file { read getattr open };
+allow nvram_daemon persist_wod_prop:property_service set;
+allow nvram_daemon pro_info_device:chr_file { read lock getattr write ioctl open append };
+allow nvram_daemon proc_lk_env:file { read lock getattr write ioctl open append };
+allow nvram_daemon program_binary:binder { transfer call };
+allow nvram_daemon program_binary:fd use;
+allow nvram_daemon property_socket:sock_file { write lock open append };
+allow nvram_daemon rootfs:dir { read open };
+allow nvram_daemon rootfs:file { read lock ioctl open getattr };
+allow nvram_daemon service_nvram_init_prop:property_service set;
+allow nvram_daemon shell_exec:file { execute read lock getattr execute_no_trans ioctl open };
+allow nvram_daemon sysfs:dir { search read lock getattr ioctl open };
+allow nvram_daemon sysfs:file { read lock getattr write ioctl open append };
+allow nvram_daemon sysfs:lnk_file { read lock ioctl open getattr };
+allow nvram_daemon system_data_file:dir write;
+allow nvram_daemon system_file:file execute_no_trans;
+allow nvram_daemon system_prop:property_service set;
+allow nvram_daemon toolbox_exec:file { execute read lock getattr execute_no_trans ioctl open };
+allow nvram_daemon usp_srv_prop:property_service set;
+allow nvram_daemon wifi_5g_prop:property_service set;
+allow nvram_write block_device:dir search;
+allow nvram_write device:dir write;
+allow nvram_write ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow nvram_write ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow nvram_write guiext-server:binder { transfer call };
+allow nvram_write guiext-server:fd use;
+allow nvram_write guiext-server_service:service_manager find;
+allow nvram_write hotknot_native:binder { transfer call };
+allow nvram_write hotknot_native:fd use;
+allow nvram_write init:process sigchld;
+allow nvram_write kmsg_device:chr_file { write open };
+allow nvram_write nvdata_file:dir { search read write getattr open add_name };
+allow nvram_write nvdata_file:file { setattr read create write getattr open };
+allow nvram_write nvram_data_file:lnk_file read;
+allow nvram_write nvram_device:blk_file { read write open };
+allow nvram_write nvram_write:capability dac_override;
+allow nvram_write nvram_write:dir { search read lock getattr ioctl open };
+allow nvram_write nvram_write:fd use;
+allow nvram_write nvram_write:fifo_file { read lock getattr write ioctl open append };
+allow nvram_write nvram_write:file { read lock getattr write ioctl open append };
+allow nvram_write nvram_write:lnk_file { read lock ioctl open getattr };
+allow nvram_write nvram_write:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow nvram_write nvram_write:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow nvram_write nvram_write:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow nvram_write nvram_write_exec:file { read open getattr entrypoint execute };
+allow nvram_write nvram_write_tmpfs:file { read write };
+allow nvram_write program_binary:binder { transfer call };
+allow nvram_write program_binary:fd use;
+allow nvram_write sysfs:file { read lock getattr write ioctl open append };
+allow nvram_write tad:unix_stream_socket connectto;
+allow nvram_write tad_socket:sock_file { write lock open append };
+allow qns ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow qns ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow qns guiext-server:binder { transfer call };
+allow qns guiext-server:fd use;
+allow qns guiext-server_service:service_manager find;
+allow qns hotknot_native:binder { transfer call };
+allow qns hotknot_native:fd use;
+allow qns init:process sigchld;
+allow qns kernel:system module_request;
+allow qns program_binary:binder { transfer call };
+allow qns program_binary:fd use;
+allow qns qns:capability dac_override;
+allow qns qns:dir { search read lock getattr ioctl open };
+allow qns qns:fd use;
+allow qns qns:fifo_file { read lock getattr write ioctl open append };
+allow qns qns:file { read lock getattr write ioctl open append };
+allow qns qns:lnk_file { read lock ioctl open getattr };
+allow qns qns:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow qns qns:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow qns qns:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow qns qns_exec:file { read open getattr entrypoint execute };
+allow qns qns_file:dir { write remove_name search add_name };
+allow qns qns_file:file { read create write getattr unlink open append };
+allow qns qns_sysfs:dir search;
+allow qns qns_sysfs:file { read write getattr open };
+allow qns qns_tmpfs:file { read write };
+allow thermal ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermal ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal guiext-server:binder { transfer call };
+allow thermal guiext-server:fd use;
+allow thermal guiext-server_service:service_manager find;
+allow thermal hotknot_native:binder { transfer call };
+allow thermal hotknot_native:fd use;
+allow thermal init:process sigchld;
+allow thermal mtkrild:unix_stream_socket connectto;
+allow thermal netd:unix_stream_socket connectto;
+allow thermal netd_socket:sock_file write;
+allow thermal proc_thermal:dir search;
+allow thermal proc_thermal:file { read write open };
+allow thermal program_binary:binder { transfer call };
+allow thermal program_binary:fd use;
+allow thermal rild_oem_socket:sock_file write;
+allow thermal rpc_socket:sock_file write;
+allow thermal statusd:unix_stream_socket connectto;
+allow thermal sysfs:dir { search read lock getattr ioctl open };
+allow thermal sysfs:file { read lock ioctl open getattr };
+allow thermal sysfs:lnk_file { read lock ioctl open getattr };
+allow thermal thermal:dir { search read lock getattr ioctl open };
+allow thermal thermal:fd use;
+allow thermal thermal:fifo_file { read lock getattr write ioctl open append };
+allow thermal thermal:file { read lock getattr write ioctl open append };
+allow thermal thermal:lnk_file { read lock ioctl open getattr };
+allow thermal thermal:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow thermal thermal:udp_socket { ioctl create };
+allow thermal thermal:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow thermal thermal:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow thermal thermal_exec:file { read open getattr entrypoint execute };
+allow thermal thermal_tmpfs:file { read write };
+allow thermal viarild:unix_stream_socket connectto;
+allow thermal_manager MTK_SMI_device:chr_file read;
+allow thermal_manager camera_isp_device:chr_file { read write };
+allow thermal_manager cameraserver:fd use;
+allow thermal_manager cameraserver:process sigchld;
+allow thermal_manager ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermal_manager ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal_manager guiext-server:binder { transfer call };
+allow thermal_manager guiext-server:fd use;
+allow thermal_manager guiext-server_service:service_manager find;
+allow thermal_manager hotknot_native:binder { transfer call };
+allow thermal_manager hotknot_native:fd use;
+allow thermal_manager init:process sigchld;
+allow thermal_manager init:unix_stream_socket connectto;
+allow thermal_manager kd_camera_hw_device:chr_file { read write };
+allow thermal_manager mediaserver:fd use;
+allow thermal_manager mediaserver:fifo_file { read write };
+allow thermal_manager mediaserver:process sigchld;
+allow thermal_manager mediaserver:tcp_socket { read write };
+allow thermal_manager proc_mtkcooler:dir search;
+allow thermal_manager proc_mtkcooler:file { read lock getattr write ioctl open append };
+allow thermal_manager proc_mtktz:dir search;
+allow thermal_manager proc_mtktz:file { read lock getattr write ioctl open append };
+allow thermal_manager proc_thermal:dir search;
+allow thermal_manager proc_thermal:file { read lock getattr write ioctl open append };
+allow thermal_manager program_binary:binder { transfer call };
+allow thermal_manager program_binary:fd use;
+allow thermal_manager property_socket:sock_file write;
+allow thermal_manager surfaceflinger:fd use;
+allow thermal_manager sysfs:dir { search read lock getattr ioctl open };
+allow thermal_manager sysfs:file { read lock getattr write ioctl open };
+allow thermal_manager sysfs:lnk_file { read lock ioctl open getattr };
+allow thermal_manager system_data_file:dir { search read lock getattr write ioctl open add_name };
+allow thermal_manager thermal_manager:capability { fowner chown fsetid dac_override };
+allow thermal_manager thermal_manager:dir { search read lock getattr ioctl open };
+allow thermal_manager thermal_manager:fd use;
+allow thermal_manager thermal_manager:fifo_file { read lock getattr write ioctl open append };
+allow thermal_manager thermal_manager:file { read lock getattr write ioctl open append };
+allow thermal_manager thermal_manager:lnk_file { read lock ioctl open getattr };
+allow thermal_manager thermal_manager:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow thermal_manager thermal_manager:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow thermal_manager thermal_manager:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow thermal_manager thermal_manager_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermal_manager thermal_manager_data_file:fifo_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal_manager thermal_manager_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal_manager thermal_manager_data_file:lnk_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal_manager thermal_manager_data_file:sock_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermal_manager thermal_manager_exec:file { read open getattr entrypoint execute };
+allow thermal_manager thermal_manager_tmpfs:file { read write };
+allow thermald activity_service:service_manager find;
+allow thermald ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermald ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermald guiext-server:binder { transfer call };
+allow thermald guiext-server:fd use;
+allow thermald guiext-server_service:service_manager find;
+allow thermald hotknot_native:binder { transfer call };
+allow thermald hotknot_native:fd use;
+allow thermald init:process sigchld;
+allow thermald proc_thermal:dir search;
+allow thermald proc_thermal:file { read write getattr open };
+allow thermald program_binary:binder { transfer call };
+allow thermald program_binary:fd use;
+allow thermald servicemanager:binder { transfer call };
+allow thermald sysfs:dir { search read lock getattr ioctl open };
+allow thermald sysfs:file { read lock ioctl open getattr };
+allow thermald sysfs:lnk_file { read lock ioctl open getattr };
+allow thermald system_server:binder call;
+allow thermald thermald:dir { search read lock getattr ioctl open };
+allow thermald thermald:fd use;
+allow thermald thermald:fifo_file { read lock getattr write ioctl open append };
+allow thermald thermald:file { read lock getattr write ioctl open append };
+allow thermald thermald:lnk_file { read lock ioctl open getattr };
+allow thermald thermald:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow thermald thermald:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow thermald thermald:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow thermald thermald_exec:file { read open getattr entrypoint execute };
+allow thermald thermald_tmpfs:file { read write };
+allow thermalindicator ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermalindicator ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermalindicator gpu_device:chr_file { read write ioctl open getattr };
+allow thermalindicator guiext-server:binder { transfer call };
+allow thermalindicator guiext-server:fd use;
+allow thermalindicator guiext-server_service:service_manager find;
+allow thermalindicator hotknot_native:binder { transfer call };
+allow thermalindicator hotknot_native:fd use;
+allow thermalindicator init:process sigchld;
+allow thermalindicator init:unix_stream_socket connectto;
+allow thermalindicator mediaserver:dir search;
+allow thermalindicator mediaserver:file { read getattr open };
+allow thermalindicator platform_app:dir search;
+allow thermalindicator platform_app:file { read getattr open };
+allow thermalindicator proc:dir { getattr search };
+allow thermalindicator proc:file read;
+allow thermalindicator program_binary:binder { transfer call };
+allow thermalindicator program_binary:fd use;
+allow thermalindicator property_socket:sock_file write;
+allow thermalindicator servicemanager:binder call;
+allow thermalindicator shell:dir search;
+allow thermalindicator surfaceflinger:binder { transfer call };
+allow thermalindicator surfaceflinger:fd use;
+allow thermalindicator surfaceflinger_service:service_manager find;
+allow thermalindicator sysfs:dir { search read lock getattr ioctl open };
+allow thermalindicator sysfs:file { read lock ioctl open getattr };
+allow thermalindicator sysfs:lnk_file { read lock ioctl open getattr };
+allow thermalindicator thermalindicator:dir { search read lock getattr ioctl open };
+allow thermalindicator thermalindicator:fd use;
+allow thermalindicator thermalindicator:fifo_file { read lock getattr write ioctl open append };
+allow thermalindicator thermalindicator:file { read lock getattr write ioctl open append };
+allow thermalindicator thermalindicator:lnk_file { read lock ioctl open getattr };
+allow thermalindicator thermalindicator:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow thermalindicator thermalindicator:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow thermalindicator thermalindicator:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow thermalindicator thermalindicator_exec:file { read open getattr entrypoint execute };
+allow thermalindicator thermalindicator_tmpfs:file { read write };
+allow thermalindicator untrusted_app:dir search;
+allow thermalindicator untrusted_app:file { read getattr open };
+allow thermalloadalgod ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermalloadalgod ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermalloadalgod guiext-server:binder { transfer call };
+allow thermalloadalgod guiext-server:fd use;
+allow thermalloadalgod guiext-server_service:service_manager find;
+allow thermalloadalgod hotknot_native:binder { transfer call };
+allow thermalloadalgod hotknot_native:fd use;
+allow thermalloadalgod init:process sigchld;
+allow thermalloadalgod input_device:dir { search read lock getattr write ioctl open };
+allow thermalloadalgod input_device:file { read lock ioctl open getattr };
+allow thermalloadalgod kmsg_device:chr_file write;
+allow thermalloadalgod program_binary:binder { transfer call };
+allow thermalloadalgod program_binary:fd use;
+allow thermalloadalgod sysfs:dir { search read lock getattr ioctl open };
+allow thermalloadalgod sysfs:file { read lock ioctl open getattr };
+allow thermalloadalgod sysfs:lnk_file { read lock ioctl open getattr };
+allow thermalloadalgod thermal_manager_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow thermalloadalgod thermal_manager_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow thermalloadalgod thermalloadalgod:dir { search read lock getattr ioctl open };
+allow thermalloadalgod thermalloadalgod:fd use;
+allow thermalloadalgod thermalloadalgod:fifo_file { read lock getattr write ioctl open append };
+allow thermalloadalgod thermalloadalgod:file { read lock getattr write ioctl open append };
+allow thermalloadalgod thermalloadalgod:lnk_file { read lock ioctl open getattr };
+allow thermalloadalgod thermalloadalgod:netlink_kobject_uevent_socket { read write create bind };
+allow thermalloadalgod thermalloadalgod:netlink_socket { read write create bind };
+allow thermalloadalgod thermalloadalgod:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow thermalloadalgod thermalloadalgod:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow thermalloadalgod thermalloadalgod:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow thermalloadalgod thermalloadalgod_exec:file { read open getattr entrypoint execute };
+allow thermalloadalgod thermalloadalgod_tmpfs:file { read write };
+allow sysenv_daemon block_device:dir search;
+allow sysenv_daemon ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow sysenv_daemon ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow sysenv_daemon guiext-server:binder { transfer call };
+allow sysenv_daemon guiext-server:fd use;
+allow sysenv_daemon guiext-server_service:service_manager find;
+allow sysenv_daemon hotknot_native:binder { transfer call };
+allow sysenv_daemon hotknot_native:fd use;
+allow sysenv_daemon init:process sigchld;
+allow sysenv_daemon para_block_device:blk_file { read lock getattr write ioctl open append };
+allow sysenv_daemon proc_lk_env:file { read lock getattr write ioctl open append };
+allow sysenv_daemon program_binary:binder { transfer call };
+allow sysenv_daemon program_binary:fd use;
+allow sysenv_daemon sysenv_daemon:dir { search read lock getattr ioctl open };
+allow sysenv_daemon sysenv_daemon:fd use;
+allow sysenv_daemon sysenv_daemon:fifo_file { read lock getattr write ioctl open append };
+allow sysenv_daemon sysenv_daemon:file { read lock getattr write ioctl open append };
+allow sysenv_daemon sysenv_daemon:lnk_file { read lock ioctl open getattr };
+allow sysenv_daemon sysenv_daemon:netlink_socket { read bind create };
+allow sysenv_daemon sysenv_daemon:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow sysenv_daemon sysenv_daemon:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow sysenv_daemon sysenv_daemon:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow sysenv_daemon sysenv_daemon_exec:file { read open getattr entrypoint execute };
+allow sysenv_daemon sysenv_daemon_tmpfs:file { read write };
+allow sysenv_daemon sysfs:dir { search read lock getattr ioctl open };
+allow sysenv_daemon sysfs:file { read lock ioctl open getattr };
+allow sysenv_daemon sysfs:lnk_file { read lock ioctl open getattr };
+allow usp_service block_device:dir search;
+allow usp_service ccci_device:chr_file { read lock getattr write ioctl open append };
+allow usp_service ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow usp_service ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow usp_service guiext-server:binder { transfer call };
+allow usp_service guiext-server:fd use;
+allow usp_service guiext-server_service:service_manager find;
+allow usp_service hotknot_native:binder { transfer call };
+allow usp_service hotknot_native:fd use;
+allow usp_service init:process sigchld;
+allow usp_service init:unix_stream_socket connectto;
+allow usp_service para_block_device:blk_file { read lock getattr write ioctl open append };
+allow usp_service proc_lk_env:file { read lock getattr write ioctl open append };
+allow usp_service program_binary:binder { transfer call };
+allow usp_service program_binary:fd use;
+allow usp_service property_socket:sock_file write;
+allow usp_service usp_service:dir { search read lock getattr ioctl open };
+allow usp_service usp_service:fd use;
+allow usp_service usp_service:fifo_file { read lock getattr write ioctl open append };
+allow usp_service usp_service:file { read lock getattr write ioctl open append };
+allow usp_service usp_service:lnk_file { read lock ioctl open getattr };
+allow usp_service usp_service:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow usp_service usp_service:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow usp_service usp_service:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow usp_service usp_service_exec:file { read open getattr entrypoint execute };
+allow usp_service usp_service_tmpfs:file { read write };
+allow usp_service usp_srv_prop:file { read lock ioctl open getattr };
+allow usp_service usp_srv_prop:property_service set;
+allow ipsec charon_exec:file { execute read execute_no_trans getattr entrypoint open };
+allow ipsec custom_file:dir { read search open };
+allow ipsec custom_file:file { read getattr open };
+allow ipsec devpts:chr_file { read write open };
+allow ipsec dnsproxyd_socket:sock_file write;
+allow ipsec ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow ipsec ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow ipsec epdg_wod:fd use;
+allow ipsec epdg_wod:process sigchld;
+allow ipsec epdg_wod:unix_stream_socket { read write connectto };
+allow ipsec fwmarkd_socket:sock_file write;
+allow ipsec guiext-server:binder { transfer call };
+allow ipsec guiext-server:fd use;
+allow ipsec guiext-server_service:service_manager find;
+allow ipsec hotknot_native:binder { transfer call };
+allow ipsec hotknot_native:fd use;
+allow ipsec init:unix_stream_socket connectto;
+allow ipsec ipsec:capability { net_admin kill net_bind_service dac_override };
+allow ipsec ipsec:capability2 wake_alarm;
+allow ipsec ipsec:dir { search read lock getattr ioctl open };
+allow ipsec ipsec:fd use;
+allow ipsec ipsec:fifo_file { read lock getattr write ioctl open append };
+allow ipsec ipsec:file { read lock getattr write ioctl open append };
+allow ipsec ipsec:lnk_file { read lock ioctl open getattr };
+allow ipsec ipsec:netlink_route_socket { nlmsg_write read bind create nlmsg_read write };
+allow ipsec ipsec:netlink_xfrm_socket { nlmsg_write read bind create nlmsg_read write };
+allow ipsec ipsec:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow ipsec ipsec:tcp_socket { read create write getattr connect getopt };
+allow ipsec ipsec:udp_socket { read write create setopt bind };
+allow ipsec ipsec:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow ipsec ipsec:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow ipsec mtk_wod_prop:property_service set;
+allow ipsec netd:unix_stream_socket connectto;
+allow ipsec node:udp_socket node_bind;
+allow ipsec port:tcp_socket name_connect;
+allow ipsec port:udp_socket name_bind;
+allow ipsec proc_net:file write;
+allow ipsec program_binary:binder { transfer call };
+allow ipsec program_binary:fd use;
+allow ipsec property_socket:sock_file write;
+allow ipsec starter_exec:file { read open getattr entrypoint execute };
+allow ipsec stroke_exec:file { read open getattr entrypoint execute };
+allow ipsec sysfs:dir { search read lock getattr ioctl open };
+allow ipsec sysfs:file { read lock ioctl open getattr };
+allow ipsec sysfs:lnk_file { read lock ioctl open getattr };
+allow ipsec vpn_data_file:dir { write remove_name search add_name };
+allow ipsec vpn_data_file:file { setattr read create write getattr unlink open };
+allow ipsec vpn_data_file:sock_file { write create unlink setattr };
+allow ipsec wod_apn_conf_file:dir { search read create write remove_name open add_name };
+allow ipsec wod_apn_conf_file:file { read write ioctl open getattr };
+allow ipsec wod_ipsec_conf_file:dir { search read write remove_name open add_name };
+allow ipsec wod_ipsec_conf_file:file { read create getattr write ioctl unlink open append };
+allow ipsec wod_ipsec_socket:sock_file write;
+allow ipsec_mon ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow ipsec_mon ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow ipsec_mon guiext-server:binder { transfer call };
+allow ipsec_mon guiext-server:fd use;
+allow ipsec_mon guiext-server_service:service_manager find;
+allow ipsec_mon hotknot_native:binder { transfer call };
+allow ipsec_mon hotknot_native:fd use;
+allow ipsec_mon ims_ipsec_data_file:dir { write search add_name };
+allow ipsec_mon ims_ipsec_data_file:file { setattr read create getattr write ioctl open append };
+allow ipsec_mon init:process sigchld;
+allow ipsec_mon init:unix_stream_socket connectto;
+allow ipsec_mon ipsec_mon:capability { net_admin net_raw dac_override };
+allow ipsec_mon ipsec_mon:dir { search read lock getattr ioctl open };
+allow ipsec_mon ipsec_mon:fd use;
+allow ipsec_mon ipsec_mon:fifo_file { read lock getattr write ioctl open append };
+allow ipsec_mon ipsec_mon:file { read lock getattr write ioctl open append };
+allow ipsec_mon ipsec_mon:key_socket { read write create setopt };
+allow ipsec_mon ipsec_mon:lnk_file { read lock ioctl open getattr };
+allow ipsec_mon ipsec_mon:netlink_xfrm_socket { nlmsg_write read bind create nlmsg_read write };
+allow ipsec_mon ipsec_mon:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow ipsec_mon ipsec_mon:udp_socket { ioctl create };
+allow ipsec_mon ipsec_mon:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow ipsec_mon ipsec_mon:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow ipsec_mon ipsec_mon_exec:file { read open getattr entrypoint execute };
+allow ipsec_mon netd:unix_stream_socket connectto;
+allow ipsec_mon netd_socket:sock_file write;
+allow ipsec_mon program_binary:binder { transfer call };
+allow ipsec_mon program_binary:fd use;
+allow ipsec_mon property_socket:sock_file write;
+allow ipsec_mon system_file:file execute_no_trans;
+allow ipsec_mon system_prop:property_service set;
+allow gmadfs ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs gmadfs:dir { search read lock getattr ioctl open };
+allow gmadfs gmadfs:fd use;
+allow gmadfs gmadfs:fifo_file { read lock getattr write ioctl open append };
+allow gmadfs gmadfs:file { read lock getattr write ioctl open append };
+allow gmadfs gmadfs:lnk_file { read lock ioctl open getattr };
+allow gmadfs gmadfs:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow gmadfs gmadfs:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow gmadfs gmadfs:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow gmadfs gmadfs_exec:file { read open getattr entrypoint execute };
+allow gmadfs gmadfs_tmpfs:file { read write };
+allow gmadfs gsensor_device:chr_file { read write ioctl open };
+allow gmadfs guiext-server:binder { transfer call };
+allow gmadfs guiext-server:fd use;
+allow gmadfs guiext-server_service:service_manager find;
+allow gmadfs hotknot_native:binder { transfer call };
+allow gmadfs hotknot_native:fd use;
+allow gmadfs init:process sigchld;
+allow gmadfs input_device:chr_file { read write ioctl open };
+allow gmadfs input_device:dir { read write search open };
+allow gmadfs input_device:file { read open };
+allow gmadfs msensor_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs msensor_data_file:fifo_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs msensor_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs msensor_data_file:lnk_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs msensor_data_file:sock_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs msensor_device:chr_file { read write ioctl open };
+allow gmadfs program_binary:binder { transfer call };
+allow gmadfs program_binary:fd use;
+allow gmadfs system_data_file:dir { search setattr read lock create getattr write ioctl remove_name open add_name };
+allow gmadfs306 ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306 ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306 gmadfs306:dir { search read lock getattr ioctl open };
+allow gmadfs306 gmadfs306:fd use;
+allow gmadfs306 gmadfs306:fifo_file { read lock getattr write ioctl open append };
+allow gmadfs306 gmadfs306:file { read lock getattr write ioctl open append };
+allow gmadfs306 gmadfs306:lnk_file { read lock ioctl open getattr };
+allow gmadfs306 gmadfs306:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow gmadfs306 gmadfs306:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow gmadfs306 gmadfs306:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow gmadfs306 gmadfs306_exec:file { read open getattr entrypoint execute };
+allow gmadfs306 gmadfs306_tmpfs:file { read write };
+allow gmadfs306 gsensor_device:chr_file { read write ioctl open };
+allow gmadfs306 guiext-server:binder { transfer call };
+allow gmadfs306 guiext-server:fd use;
+allow gmadfs306 guiext-server_service:service_manager find;
+allow gmadfs306 hotknot_native:binder { transfer call };
+allow gmadfs306 hotknot_native:fd use;
+allow gmadfs306 init:process sigchld;
+allow gmadfs306 input_device:dir { read write search open };
+allow gmadfs306 input_device:file { read open };
+allow gmadfs306 msensor_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306 msensor_data_file:fifo_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306 msensor_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306 msensor_data_file:lnk_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306 msensor_data_file:sock_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306 msensor_device:chr_file { read write ioctl open };
+allow gmadfs306 program_binary:binder { transfer call };
+allow gmadfs306 program_binary:fd use;
+allow gmadfs306 system_data_file:dir { search setattr read lock create getattr write ioctl open add_name };
+allow gmadfs306_sm21_sp1 ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306_sm21_sp1 ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:dir { search read lock getattr ioctl open };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:fd use;
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:fifo_file { read lock getattr write ioctl open append };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:file { read lock getattr write ioctl open append };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:lnk_file { read lock ioctl open getattr };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1_exec:file { read open getattr entrypoint execute };
+allow gmadfs306_sm21_sp1 gmadfs306_sm21_sp1_tmpfs:file { read write };
+allow gmadfs306_sm21_sp1 gsensor_device:chr_file { read write ioctl open };
+allow gmadfs306_sm21_sp1 guiext-server:binder { transfer call };
+allow gmadfs306_sm21_sp1 guiext-server:fd use;
+allow gmadfs306_sm21_sp1 guiext-server_service:service_manager find;
+allow gmadfs306_sm21_sp1 hotknot_native:binder { transfer call };
+allow gmadfs306_sm21_sp1 hotknot_native:fd use;
+allow gmadfs306_sm21_sp1 init:process sigchld;
+allow gmadfs306_sm21_sp1 input_device:dir { read write search open };
+allow gmadfs306_sm21_sp1 input_device:file { read open };
+allow gmadfs306_sm21_sp1 msensor_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306_sm21_sp1 msensor_data_file:fifo_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp1 msensor_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp1 msensor_data_file:lnk_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp1 msensor_data_file:sock_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp1 msensor_device:chr_file { read write ioctl open };
+allow gmadfs306_sm21_sp1 program_binary:binder { transfer call };
+allow gmadfs306_sm21_sp1 program_binary:fd use;
+allow gmadfs306_sm21_sp1 system_data_file:dir { search setattr read lock create getattr write ioctl open add_name };
+allow gmadfs306_sm21_sp2 ecryptfs:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306_sm21_sp2 ecryptfs:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:dir { search read lock getattr ioctl open };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:fd use;
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:fifo_file { read lock getattr write ioctl open append };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:file { read lock getattr write ioctl open append };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:lnk_file { read lock ioctl open getattr };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:process { fork getsession sigkill sigchld setpgid setsched signal getattr setcap sigstop getcap getpgid getsched signull setrlimit };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:unix_dgram_socket { setopt setattr read lock create sendto getattr write ioctl connect shutdown bind getopt append };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2:unix_stream_socket { connectto setopt setattr read lock create getattr accept write ioctl connect shutdown bind getopt append listen };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2_exec:file { read open getattr entrypoint execute };
+allow gmadfs306_sm21_sp2 gmadfs306_sm21_sp2_tmpfs:file { read write };
+allow gmadfs306_sm21_sp2 gsensor_device:chr_file { read write ioctl open };
+allow gmadfs306_sm21_sp2 guiext-server:binder { transfer call };
+allow gmadfs306_sm21_sp2 guiext-server:fd use;
+allow gmadfs306_sm21_sp2 guiext-server_service:service_manager find;
+allow gmadfs306_sm21_sp2 hotknot_native:binder { transfer call };
+allow gmadfs306_sm21_sp2 hotknot_native:fd use;
+allow gmadfs306_sm21_sp2 init:process sigchld;
+allow gmadfs306_sm21_sp2 input_device:dir { read write search open };
+allow gmadfs306_sm21_sp2 input_device:file { read open };
+allow gmadfs306_sm21_sp2 msensor_data_file:dir { rename search setattr read lock create reparent getattr write ioctl rmdir remove_name open add_name };
+allow gmadfs306_sm21_sp2 msensor_data_file:fifo_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp2 msensor_data_file:file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp2 msensor_data_file:lnk_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp2 msensor_data_file:sock_file { rename setattr read lock create getattr write ioctl unlink open append };
+allow gmadfs306_sm21_sp2 msensor_device:chr_file { read write ioctl open };
+allow gmadfs306_sm21_sp2 program_binary:binder { transfer call };
+allow gmadfs306_sm21_sp2 program_binary:fd use;
+allow gmadfs306_sm21_sp2 system_data_file:dir { search setattr read lock create getattr write ioctl open add_name };
