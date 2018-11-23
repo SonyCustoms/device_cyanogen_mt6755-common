@@ -39,6 +39,7 @@ PRODUCT_PACKAGES += \
     init.aee.rc \
     init.qns.rc \
     init.rc \
+    init.mal.rc \
     meta_init.connectivity.rc \
     meta_init.modem.rc \
     meta_init.project.rc \
