@@ -42,9 +42,24 @@ init_daemon_domain(thermalindicator)
 type embms_library_file, file_type, data_file_type;
 ##
 ##
-type idd_data_file , exec_type, file_type;
-type idd_data ,domain;
-init_daemon_domain(idd_data)
+type idd_data_file , file_type, data_file_type;
+##
+##
+type scd_exec, exec_type, file_type;
+type apfd_exec, exec_type, file_type;
+type secd_exec, exec_type, file_type;
+type idd_exec, exec_type, file_type;
+type xssm_exec, exec_type, file_type;
+type wvkbd_exec, exec_type, file_type;
+type moddir_exec, exec_type, file_type;
+type klogcat_exec, exec_type, file_type;
+type cta_exec, exec_type, file_type;
+type mpobserver_exec, exec_type, file_type;
+type tpm-service_exec, exec_type, file_type;
+type scdnotifier_exec, exec_type, file_type;
+type startupprober_exec, exec_type, file_type;
+type crashmonitorns_exec, exec_type, file_type;
+type display_color_calib_exec, exec_type, file_type; 
 ##
 ##
 type DW9790A_device , exec_type, dev_type;

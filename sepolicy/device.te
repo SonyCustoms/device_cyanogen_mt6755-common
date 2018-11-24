@@ -2,6 +2,8 @@
 # MTK Policy Rule
 # ==============================================
 
+type cciklog_device, dev_type;
+type dri_device, dev_type;
 type m_fusion_misc_device, dev_type;
 type m_step_c_misc_device, dev_type;
 type LC898212XDAF_device, dev_type;
@@ -100,6 +102,8 @@ type MT6516_MM_QUEUE_device, dev_type;
 type MT6516_MP4_DEC_device, dev_type;
 type MT6516_MP4_ENC_device, dev_type;
 type sensor_device, dev_type;
+type ut_keymaster_device, dev_type;
+type tad_block_device, dev_type;
 type xlog_device, dev_type;
 type aed_device, dev_type;
 type ccci_device, dev_type;
@@ -186,6 +190,11 @@ type ttyACM_device, dev_type;
 type hrm_device, dev_type;
 type lens_device, dev_type;
 type nvdata_device, dev_type;
+type diag_block_device, dev_type;
+type appslog_block_device, dev_type;
+type odm_block_device, dev_type;
+type oem_block_device, dev_type;
+type vendor_block_device, dev_type;
 type expdb_block_device, dev_type;
 type misc2_block_device, dev_type;
 type logo_block_device, dev_type;

@@ -24,12 +24,6 @@ type tad ,domain;
 init_daemon_domain(tad)
 ##
 
-##
-type tad_socket_exec , exec_type, file_type;
-type tad_socket ,domain;
-init_daemon_domain(tad_socket)
-##
-
 # Date : WK14.31
 # Operation : Migration 
 # Purpose : the device is used to store Nvram backup data that can not be lost. 

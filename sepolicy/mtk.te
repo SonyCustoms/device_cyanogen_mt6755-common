@@ -115,12 +115,6 @@ init_daemon_domain(embms_library)
 ##
 
 ##
-type debugfs_usb20_phy_exec , exec_type, file_type;
-type debugfs_usb20_phy ,domain;
-init_daemon_domain(debugfs_usb20_phy)
-##
-
-##
 type ims_mode_prop, property_type;
 type mtk_em_3gvt_prop, property_type;
 type mtk_em_bt_sspdebug_prop, property_type;
