@@ -18,6 +18,7 @@ $(call add-rootdir-targets, \
     init.mt6755.usb.rc \
     init.project.rc \
     init.recovery.mt6755.rc \
+    init.rilproxy.rc \
     init.usb.configfs.rc \
     init.usb.rc \
     init.volte.rc \

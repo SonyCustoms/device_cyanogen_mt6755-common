@@ -29,6 +29,7 @@ PRODUCT_PACKAGES += \
     init.project.rc \
     init.usb.configfs.rc \
     init.usb.rc \
+    init.rilproxy.rc \
     init.volte.rc \
     init.wfca.rc \
     ueventd.mt6755.rc \

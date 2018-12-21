@@ -4,6 +4,8 @@
 # This is a common source of Android security bugs.
 #
 
+import init.rilproxy.rc
+
 on early-init
     write /sys/class/net/ccmni0/queues/rx-0/rps_cpus "ff"
     write /sys/class/net/ccmni1/queues/rx-0/rps_cpus "ff"
