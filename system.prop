@@ -1,6 +1,7 @@
 # RIL
 rild.libpath=mtk-ril.so
 rild.libargs=-d /dev/ttyC0
+ro.telephony.ril_class=MT6757
 ril.flightmode.poweroffMD=1
 persist.radio.multisim.config=dsds
 ro.telephony.sim.count=2
@@ -46,7 +47,6 @@ persist.log.tag.C2K_RIL-DATA=I
 persist.log.tag.RIL-SIM=I
 persist.log.tag.RILJ=D
 persist.ril.radio.nw.log=1
-ro.telephony.ril_class=MT6755
 ro.mediatek.chip_ver=S01
 ro.mediatek.platform=MT6755
 ro.carrier=unknown
