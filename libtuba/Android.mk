@@ -29,8 +29,7 @@ LOCAL_SRC_FILES := \
     tuba_ui.cpp \
     tuba_wvm.cpp \
     tuba_wifi.cpp \
-    tuba_xlog.cpp \
-    ril/tuba_ril.cpp
+    tuba_xlog.cpp
 
 # only for 64bit libraries
 LOCAL_SRC_FILES_64 := tuba_parcel.cpp
