@@ -40,9 +40,6 @@ TARGET_2ND_CPU_VARIANT := cortex-a53
 
 BOARD_FLASH_BLOCK_SIZE := 4096
 
-# Common properties
-TARGET_SYSTEM_PROP := $(COMMON_PATH)/system.prop
-
 # FSTAB
 TARGET_RECOVERY_FSTAB := $(COMMON_PATH)/rootdir/fstab.mt6755
 

@@ -51,9 +51,6 @@ PRODUCT_COPY_FILES += \
 
 # ADB Debugging
 ADDITIONAL_DEFAULT_PROPERTIES += \
-    ro.adb.secure=0 \
-    ro.debuggable=1 \
-    ro.secure=0 \
     persist.logd.logpersistd=logcatd
 
 # Audio
@@ -107,8 +104,8 @@ PRODUCT_PACKAGES += \
     wpa_supplicant \
 
 # Charger Mode
-PRODUCT_PACKAGES += \
-    charger_res_images
+#PRODUCT_PACKAGES += \
+#    charger_res_images
 
 PRODUCT_PACKAGES += \
     Doze
