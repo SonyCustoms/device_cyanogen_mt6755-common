@@ -150,6 +150,8 @@ TW_CRYPTO_KEY_LOC := "footer"
 TW_CRYPTO_FS_OPTIONS := "nosuid,nodev,noatime,discard,noauto_da_alloc,data =ordered"
 TW_INCLUDE_L_CRYPTO := true
 
+TARGET_SYSTEM_PROP += $(COMMON_PATH)/system.prop
+
 # Time Zone data for Recovery
 PRODUCT_COPY_FILES += \
     bionic/libc/zoneinfo/tzdata:recovery/root/system/usr/share/zoneinfo/tzdata
