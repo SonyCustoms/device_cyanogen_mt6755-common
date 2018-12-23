@@ -11,7 +11,7 @@ import init.common_svc.rc
 import init.target.rc
 
 # init.modem.rc must be the LAST rc file because vold.post_fs_data_done is set in it
-import init.mt6755.modem.rc
+import init.modem.rc
 # *** DO NOT import the new rc file after this line ***
 
 on early-init

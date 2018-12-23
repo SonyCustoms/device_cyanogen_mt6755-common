@@ -21,29 +21,16 @@ DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 PRODUCT_PACKAGES += \
     fstab.mt6755 \
     init.connectivity.rc \
-    init.common_svc.rc \
-    init.epdg.rc \
-    init.mt6755.modem.rc \
+    init.modem.rc \
     init.mt6755.rc \
     init.mt6755.usb.rc \
     init.project.rc \
+    init.recovery.mt6755.rc \
+    init.rilproxy.rc \
     init.usb.configfs.rc \
     init.usb.rc \
-    init.rilproxy.rc \
-    init.volte.rc \
-    init.wfca.rc \
     ueventd.mt6755.rc \
-    factory_init.connectivity.rc \
-    factory_init.project.rc \
-    factory_init.rc \
-    init.aee.rc \
-    init.qns.rc \
-    init.rc \
-    init.mal.rc \
-    meta_init.connectivity.rc \
-    meta_init.modem.rc \
-    meta_init.project.rc \
-    meta_init.rc
+    init.rc
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/recovery/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
