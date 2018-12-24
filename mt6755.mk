@@ -30,6 +30,12 @@ PRODUCT_PACKAGES += \
     init.usb.configfs.rc \
     init.usb.rc \
     ueventd.mt6755.rc \
+    factory_init.connectivity.rc \
+    factory_init.project.rc \
+    factory_init.rc \
+    meta_init.connectivity.rc \
+    meta_init.modem.rc \
+    meta_init.project.rc \
     init.rc
 
 PRODUCT_COPY_FILES += \

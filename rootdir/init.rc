@@ -19,7 +19,7 @@ on early-init
     write /proc/1/oom_score_adj -1000
 
     # Disable sysrq from keyboard
-    #write /proc/sys/kernel/sysrq 0
+    write /proc/sys/kernel/sysrq 0
 
     # Set the security context of /adb_keys if present.
     restorecon /adb_keys
@@ -296,7 +296,7 @@ on post-fs
     mkdir /cache/recovery 0770 system cache
 
     # Backup/restore mechanism uses the cache partition
-    mkdir /cache/backup_stage 0750 system cache
+    mkdir /cache/backup_stage 0700 system system
     mkdir /cache/backup 0700 system system
 
     #change permissions on vmallocinfo so we can grab it from bugreports

@@ -1,8 +1,6 @@
 # Telephony
 rild.libpath=mtk-ril.so
 rild.libargs=-d /dev/ttyC0
-ro.telephony.ril_class=MT6750
-ro.telephony.ril.config=fakeiccid
 ro.telephony.sim.count=2
 persist.radio.multisim.config=dsds
 ril.current.share_modem=2
